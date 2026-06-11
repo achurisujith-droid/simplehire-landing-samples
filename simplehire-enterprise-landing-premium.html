@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SimpleHire — Only verified candidates reach your panel</title>
+<meta name="description" content="A verified pre-screen layer for recruiting teams. AI interviews, real code execution, identity and work-authorization verification — before a candidate ever reaches your hiring panel.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#070B14;
+  --ink-2:#101729;
+  --ink-3:#3C4658;
+  --paper:#F7F8FB;
+  --white:#FFFFFF;
+  --brand:#2563EB;
+  --brand-bright:#4F83FF;
+  --brand-deep:#1B45C4;
+  --brand-glow:rgba(37,99,235,.45);
+  --pass:#10B981;
+  --pass-deep:#047857;
+  --line:#D9DEEA;
+  --line-soft:#E8ECF4;
+  --line-dark:rgba(255,255,255,.09);
+  --txt-dim:#8B97AD;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --disp:'Archivo',sans-serif;
+  --body:'Public Sans',sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);color:var(--ink);background:var(--paper);line-height:1.55;font-size:16px;overflow-x:hidden}
+::selection{background:var(--brand);color:#fff}
+a{color:inherit}
+.wrap{max-width:1160px;margin:0 auto;padding:0 28px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--brand);font-weight:700}
+h1,h2,h3{font-family:var(--disp);line-height:1.04}
+h2{font-size:clamp(30px,4.2vw,48px);font-weight:850;letter-spacing:-.015em;font-stretch:106%}
+.sub{color:var(--ink-3);max-width:580px;margin-top:16px;font-size:17.5px}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--disp);font-weight:700;font-size:15px;padding:14px 28px;border-radius:10px;text-decoration:none;border:1.5px solid transparent;position:relative;overflow:hidden;transition:transform .25s var(--ease),box-shadow .25s var(--ease);cursor:pointer}
+.btn:focus-visible{outline:3px solid var(--brand-bright);outline-offset:3px}
+.btn-primary{background:linear-gradient(135deg,var(--brand) 0%,var(--brand-deep) 100%);color:#fff;box-shadow:0 10px 30px -10px var(--brand-glow),inset 0 1px 0 rgba(255,255,255,.2)}
+.btn-primary::after{content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);transition:left .6s var(--ease)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 40px -12px var(--brand-glow)}
+.btn-primary:hover::after{left:160%}
+.btn-ghost{border-color:var(--line);color:var(--ink);background:var(--white)}
+.btn-ghost:hover{border-color:var(--ink);transform:translateY(-2px)}
+.btn-ghost.on-dark{border-color:rgba(255,255,255,.22);color:#fff;background:rgba(255,255,255,.04);backdrop-filter:blur(6px)}
+.btn-ghost.on-dark:hover{border-color:rgba(255,255,255,.6)}
+
+/* ---------- nav ---------- */
+nav{position:fixed;top:0;left:0;right:0;z-index:90;transition:background .35s,box-shadow .35s,border-color .35s;border-bottom:1px solid transparent}
+nav.scrolled{background:rgba(7,11,20,.78);backdrop-filter:blur(14px);border-color:var(--line-dark);box-shadow:0 10px 30px -20px rgba(0,0,0,.6)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:70px}
+.logo{font-family:var(--disp);font-weight:900;font-size:20px;letter-spacing:-.01em;text-decoration:none;display:flex;align-items:center;gap:9px;color:#fff}
+.logo-mark{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--brand-bright),var(--brand-deep));display:grid;place-items:center;color:#fff;font-size:15px;font-weight:900;box-shadow:0 4px 14px -4px var(--brand-glow)}
+.nav-links{display:flex;gap:30px;align-items:center}
+.nav-links a{text-decoration:none;font-size:14.5px;font-weight:600;color:#B9C3D6;transition:color .2s}
+.nav-links a:hover{color:#fff}
+.nav-cta{font-size:14px!important;padding:10px 20px!important}
+@media(max-width:780px){.nav-links a:not(.btn){display:none}}
+
+/* ---------- HERO (dark, aurora) ---------- */
+.hero{position:relative;background:var(--ink);color:#fff;padding:170px 0 120px;overflow:hidden;isolation:isolate}
+.aurora{position:absolute;inset:0;z-index:-1;overflow:hidden}
+.aurora::before,.aurora::after{content:"";position:absolute;border-radius:50%;filter:blur(90px);opacity:.5;animation:drift 14s ease-in-out infinite alternate}
+.aurora::before{width:720px;height:720px;background:radial-gradient(circle,#1B45C4 0%,transparent 65%);top:-260px;right:-160px}
+.aurora::after{width:560px;height:560px;background:radial-gradient(circle,#2563EB 0%,transparent 62%);bottom:-300px;left:-140px;animation-delay:-7s}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(-50px,40px) scale(1.12)}}
+.grid-lines{position:absolute;inset:0;z-index:-1;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse 90% 70% at 50% 30%,#000 30%,transparent 75%)}
+.hero-grid{display:grid;grid-template-columns:1.04fr .96fr;gap:60px;align-items:center}
+@media(max-width:920px){.hero-grid{grid-template-columns:1fr;gap:56px}.hero{padding:140px 0 90px}}
+.hero .eyebrow{color:var(--brand-bright)}
+.hero h1{font-size:clamp(40px,5.8vw,68px);font-weight:900;letter-spacing:-.022em;font-stretch:110%;margin-top:18px}
+.hero h1 .w{display:inline-block;opacity:0;transform:translateY(34px);animation:rise .8s var(--ease) forwards}
+.hero h1 em{font-style:normal;background:linear-gradient(100deg,var(--brand-bright),#9DBCFF);-webkit-background-clip:text;background-clip:text;color:transparent}
+@keyframes rise{to{opacity:1;transform:translateY(0)}}
+.hero p.lead{margin-top:22px;font-size:18.5px;color:#A7B3C9;max-width:520px;opacity:0;animation:rise .8s var(--ease) .55s forwards}
+.hero-ctas{margin-top:34px;display:flex;gap:14px;flex-wrap:wrap;opacity:0;animation:rise .8s var(--ease) .7s forwards}
+.hero-note{margin-top:20px;font-family:var(--mono);font-size:12px;color:var(--txt-dim);opacity:0;animation:rise .8s var(--ease) .85s forwards}
+.hero-note b{color:var(--pass)}
+
+/* ---------- credential (signature) ---------- */
+.cred-wrap{perspective:1200px;opacity:0;animation:credIn 1s var(--ease) .35s forwards}
+@keyframes credIn{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.cred{background:rgba(255,255,255,.97);color:var(--ink);border:1px solid rgba(255,255,255,.6);border-radius:18px;box-shadow:0 60px 120px -40px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.08),0 0 80px -20px var(--brand-glow);padding:30px 30px 24px;position:relative;max-width:480px;margin-left:auto;transform-style:preserve-3d;transition:transform .25s ease-out;animation:floaty 7s ease-in-out 1.6s infinite alternate}
+@keyframes floaty{from{translate:0 0}to{translate:0 -12px}}
+@media(max-width:920px){.cred{margin:0 auto}}
+.cred-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1.5px dashed var(--line);padding-bottom:16px}
+.cred-head .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+.cred-head .n{font-family:var(--disp);font-weight:800;font-size:20px;margin-top:4px;font-stretch:105%}
+.cred-head .r{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:right;line-height:1.7}
+.cred-rows{margin-top:16px;display:flex;flex-direction:column;gap:10px}
+.crow{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:12.5px;opacity:0;transform:translateX(-14px);animation:rowIn .5s var(--ease) forwards}
+.crow:nth-child(1){animation-delay:1.0s}.crow:nth-child(2){animation-delay:1.15s}.crow:nth-child(3){animation-delay:1.3s}.crow:nth-child(4){animation-delay:1.45s}.crow:nth-child(5){animation-delay:1.6s}.crow:nth-child(6){animation-delay:1.75s}
+@keyframes rowIn{to{opacity:1;transform:translateX(0)}}
+.crow .k{color:var(--ink-3)}
+.crow .v{font-weight:700;display:flex;align-items:center;gap:7px}
+.ok{color:var(--pass-deep)}
+.score{color:var(--ink)}
+.dotline{flex:1;border-bottom:1.5px dotted var(--line);margin:0 12px;transform:translateY(3px)}
+.cred-foot{margin-top:18px;padding-top:16px;border-top:1.5px dashed var(--line)}
+.cred-foot .id{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);line-height:1.85}
+.stamp{width:104px;height:104px;border-radius:50%;border:3px solid var(--pass-deep);color:var(--pass-deep);display:grid;place-items:center;text-align:center;font-family:var(--disp);font-weight:900;font-size:13.5px;letter-spacing:.08em;transform:rotate(-12deg) scale(0);position:absolute;right:22px;bottom:60px;background:rgba(255,255,255,.92);box-shadow:inset 0 0 0 5px rgba(4,120,87,.12);animation:stamp .55s cubic-bezier(.2,1.6,.4,1) 2.05s forwards}
+.stamp small{display:block;font-family:var(--mono);font-weight:500;font-size:8.5px;letter-spacing:.12em;margin-top:3px}
+@keyframes stamp{0%{transform:rotate(8deg) scale(2.4);opacity:0}60%{opacity:1}100%{transform:rotate(-12deg) scale(1);opacity:1}}
+.stamp::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:3px solid var(--pass-deep);opacity:0;animation:ring 1.2s ease-out 2.5s forwards}
+@keyframes ring{from{opacity:.7;transform:scale(1)}to{opacity:0;transform:scale(1.55)}}
+
+/* ---------- ticker ---------- */
+.ticker{background:linear-gradient(90deg,var(--brand-deep),var(--brand));color:#fff;overflow:hidden;padding:15px 0;border-top:1px solid rgba(255,255,255,.15)}
+.ticker-track{display:flex;gap:0;width:max-content;animation:scroll 30s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker span{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;padding:0 34px;white-space:nowrap;display:inline-flex;align-items:center;gap:34px}
+.ticker span::after{content:"✓";opacity:.6}
+
+/* ---------- reveal on scroll ---------- */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}
+
+/* ---------- sections ---------- */
+section{padding:104px 0}
+.sec-head{max-width:660px}
+.phase-pill{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;padding:7px 15px;border-radius:99px;border:1.5px solid var(--brand);color:var(--brand);margin-bottom:18px;background:rgba(37,99,235,.05)}
+.phase-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--pass);box-shadow:0 0 0 0 rgba(16,185,129,.5);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 9px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+.phase-pill.soon{border-color:var(--line);color:var(--ink-3);background:var(--white)}
+
+/* pain */
+.pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px}
+@media(max-width:860px){.pain-grid{grid-template-columns:1fr}}
+.pain-card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:30px;transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .35s}
+.pain-card:hover{transform:translateY(-6px);box-shadow:0 24px 50px -24px rgba(11,18,32,.25);border-color:var(--brand)}
+.pain-card .tag{font-family:var(--mono);font-size:11px;color:var(--brand);display:block;margin-bottom:14px;font-weight:700}
+.pain-card h3{font-size:19px;font-weight:800;font-stretch:105%}
+.pain-card p{font-size:14.5px;color:var(--ink-3);margin-top:9px}
+
+/* tiers */
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px}
+@media(max-width:900px){.tiers{grid-template-columns:1fr}}
+.tier{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:32px;display:flex;flex-direction:column;position:relative;transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
+.tier:hover{transform:translateY(-8px);box-shadow:0 30px 60px -28px rgba(11,18,32,.3)}
+.tier.featured{border:2px solid transparent;background:linear-gradient(var(--white),var(--white)) padding-box,linear-gradient(140deg,var(--brand-bright),var(--brand-deep)) border-box;box-shadow:0 26px 60px -26px var(--brand-glow)}
+.tier.featured:hover{box-shadow:0 36px 76px -28px var(--brand-glow)}
+.tier .lvl{font-family:var(--mono);font-size:11px;letter-spacing:.13em;color:var(--ink-3);text-transform:uppercase}
+.tier h3{font-size:24px;font-weight:850;margin-top:9px;font-stretch:106%}
+.tier .spec{font-family:var(--mono);font-size:12px;color:var(--brand);margin-top:7px;font-weight:700}
+.tier p{font-size:14.5px;color:var(--ink-3);margin-top:13px}
+.tier ul{list-style:none;margin-top:20px;display:flex;flex-direction:column;gap:10px;flex:1}
+.tier li{font-size:14px;padding-left:26px;position:relative;color:var(--ink)}
+.tier li::before{content:"✓";position:absolute;left:0;color:var(--pass-deep);font-weight:700}
+.tier .price{margin-top:24px;padding-top:20px;border-top:1.5px dashed var(--line);font-family:var(--disp)}
+.tier .price b{font-size:28px;font-weight:900}
+.tier .price span{font-size:13px;color:var(--ink-3);font-family:var(--body)}
+.badge-free{position:absolute;top:-13px;right:22px;background:linear-gradient(135deg,var(--pass),var(--pass-deep));color:#fff;font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.1em;padding:6px 14px;border-radius:99px;box-shadow:0 8px 18px -6px rgba(4,120,87,.5)}
+.proctor-note{margin-top:26px;background:var(--white);border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:12px;padding:20px 24px;font-size:14.5px;color:var(--ink-3)}
+.proctor-note b{color:var(--ink)}
+
+/* verification (dark) */
+.verify{background:var(--ink);color:#fff;position:relative;overflow:hidden}
+.verify .glow{position:absolute;width:640px;height:640px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.22),transparent 65%);filter:blur(60px);top:-200px;right:-180px;pointer-events:none}
+.verify .eyebrow{color:var(--brand-bright)}
+.verify .sub{color:#A7B3C9}
+.v-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start;margin-top:8px}
+@media(max-width:900px){.v-grid{grid-template-columns:1fr;gap:48px}}
+.v-copy .item{margin-top:30px}
+.v-copy .item h3{font-size:18px;font-weight:800;font-stretch:105%}
+.v-copy .item p{font-size:14.5px;color:#A7B3C9;margin-top:7px;max-width:450px}
+.ledger{font-family:var(--mono);border:1px solid var(--line-dark);border-radius:16px;overflow:hidden;background:rgba(255,255,255,.03);backdrop-filter:blur(8px)}
+.ledger-head{background:linear-gradient(90deg,var(--brand-deep),var(--brand));color:#fff;padding:15px 22px;font-size:11px;letter-spacing:.15em;text-transform:uppercase;font-weight:700}
+.lrow{display:flex;justify-content:space-between;align-items:center;padding:17px 22px;border-bottom:1px solid var(--line-dark);font-size:13px}
+.lrow:last-child{border-bottom:none}
+.lrow .what{font-weight:500;color:#E7ECF6;display:flex;align-items:center;gap:11px}
+.lrow .what::before{content:"✓";color:var(--pass);font-weight:700}
+.lrow .how{color:var(--txt-dim);font-size:11.5px;text-align:right}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px;counter-reset:step}
+@media(max-width:860px){.steps{grid-template-columns:1fr}}
+.step{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:30px;position:relative;overflow:hidden;transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
+.step:hover{transform:translateY(-6px);box-shadow:0 24px 50px -24px rgba(11,18,32,.25)}
+.step::before{counter-increment:step;content:"0" counter(step);position:absolute;right:18px;top:6px;font-family:var(--disp);font-weight:900;font-size:74px;color:transparent;-webkit-text-stroke:1.5px var(--line);pointer-events:none}
+.step .num{font-family:var(--mono);font-size:11.5px;color:var(--brand);font-weight:700;letter-spacing:.12em}
+.step h3{font-size:20px;font-weight:800;margin-top:12px;font-stretch:105%}
+.step p{font-size:14.5px;color:var(--ink-3);margin-top:9px;max-width:300px}
+
+/* roadmap */
+.roadmap .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px}
+@media(max-width:900px){.roadmap .cards{grid-template-columns:1fr}}
+.rcard{background:linear-gradient(180deg,var(--white),#F0F4FB);border:1.5px dashed var(--line);border-radius:18px;padding:30px;transition:transform .35s var(--ease),border-color .35s}
+.rcard:hover{transform:translateY(-6px);border-color:var(--brand);border-style:solid}
+.rcard .soon-tag{font-family:var(--mono);font-size:10px;letter-spacing:.13em;color:var(--ink-3);text-transform:uppercase;border:1px solid var(--line);border-radius:99px;padding:5px 12px;display:inline-block;background:var(--white)}
+.rcard h3{font-size:20px;font-weight:800;margin-top:16px;font-stretch:105%}
+.rcard p{font-size:14.5px;color:var(--ink-3);margin-top:9px}
+
+/* CTA band */
+.cta-sec{padding:40px 0 110px}
+.cta-band{position:relative;background:linear-gradient(135deg,var(--brand-deep) 0%,var(--brand) 55%,#3D74F2 100%);background-size:200% 200%;animation:gradShift 9s ease infinite;color:#fff;border-radius:24px;padding:64px 56px;display:flex;justify-content:space-between;align-items:center;gap:36px;flex-wrap:wrap;box-shadow:0 40px 90px -34px var(--brand-glow);overflow:hidden}
+@keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.cta-band::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:46px 46px;mask-image:radial-gradient(ellipse at 80% 20%,#000,transparent 70%)}
+.cta-band h2{font-stretch:110%;position:relative}
+.cta-band p{margin-top:12px;color:#D6E2FC;max-width:470px;position:relative}
+.cta-band .btn{background:#fff;color:var(--brand);position:relative}
+.cta-band .btn:hover{transform:translateY(-2px) scale(1.02)}
+
+/* footer */
+footer{background:var(--ink);color:#fff;padding:52px 0 60px}
+.foot{display:flex;justify-content:space-between;gap:26px;flex-wrap:wrap;align-items:center}
+.foot .fine{font-family:var(--mono);font-size:11.5px;color:var(--txt-dim);line-height:2;text-align:right}
+@media(max-width:640px){.foot .fine{text-align:left}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .hero h1 .w,.hero p.lead,.hero-ctas,.hero-note,.cred-wrap,.crow{opacity:1;transform:none}
+  .stamp{transform:rotate(-12deg) scale(1);opacity:1}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="wrap nav-in">
+    <a class="logo" href="#"><span class="logo-mark">S</span>SimpleHire</a>
+    <div class="nav-links">
+      <a href="#product">Interview engine</a>
+      <a href="#verification">Verification</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#roadmap">Roadmap</a>
+      <a class="btn btn-primary nav-cta" href="#signup">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="aurora"></div>
+  <div class="grid-lines"></div>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Before you submit — prove them</span>
+      <h1>
+        <span class="w" style="animation-delay:.1s">Submit</span>
+        <span class="w" style="animation-delay:.22s"><em>proof,</em></span><br>
+        <span class="w" style="animation-delay:.36s">not</span>
+        <span class="w" style="animation-delay:.48s">resumes.</span>
+      </h1>
+      <p class="lead">Every submission carries your name. SimpleHire proves the candidate is real, work-authorized, and able — in one 20-minute screen — so your panel spends its hours deciding, never filtering.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#signup">Screen your next candidate free</a>
+        <a class="btn btn-ghost on-dark" href="#product">See how it works</a>
+      </div>
+      <p class="hero-note">No procurement required · Approve on a team budget · <b>First screens free</b></p>
+    </div>
+
+    <!-- signature: the verification report -->
+    <div class="cred-wrap">
+      <div class="cred" id="cred" aria-label="Example candidate verification report">
+        <div class="cred-head">
+          <div>
+            <div class="t">Candidate Screen Report</div>
+            <div class="n">A. Sharma — Java Backend</div>
+          </div>
+          <div class="r">REQ-2031<br>Jun 2026</div>
+        </div>
+        <div class="cred-rows">
+          <div class="crow"><span class="k">Identity check</span><span class="dotline"></span><span class="v ok">VERIFIED ✓</span></div>
+          <div class="crow"><span class="k">Work authorization</span><span class="dotline"></span><span class="v ok">CONFIRMED ✓</span></div>
+          <div class="crow"><span class="k">Voice interview</span><span class="dotline"></span><span class="v score">8.4 / 10</span></div>
+          <div class="crow"><span class="k">Coding — live execution</span><span class="dotline"></span><span class="v score">PASS · 12/14 tests</span></div>
+          <div class="crow"><span class="k">Knowledge MCQ</span><span class="dotline"></span><span class="v score">82%</span></div>
+          <div class="crow"><span class="k">Browser proctoring</span><span class="dotline"></span><span class="v ok">CLEAN ✓</span></div>
+        </div>
+        <div class="cred-foot">
+          <div class="id">CERT ID SH-7F42-K1<br>VERIFY AT SIMPLEHIRE.AI/VERIFY</div>
+        </div>
+        <div class="stamp">VERIFIED<small>SIMPLEHIRE</small></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ TICKER ============ -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>Identity verified</span><span>Work authorization confirmed</span><span>Code actually executed</span><span>Browser proctored</span><span>Face matched</span><span>Result you can trust</span>
+    <span>Identity verified</span><span>Work authorization confirmed</span><span>Code actually executed</span><span>Browser proctored</span><span>Face matched</span><span>Result you can trust</span>
+  </div>
+</div>
+
+<!-- ============ PAIN ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Why screen before you submit</span>
+      <h2>The resume stopped being evidence.</h2>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card reveal d1">
+        <span class="tag">// resume fraud</span>
+        <h3>The resume isn't the person</h3>
+        <p>AI writes the resume now. What's on paper no longer predicts who shows up — and the panel finds out on your dime.</p>
+      </div>
+      <div class="pain-card reveal d2">
+        <span class="tag">// proxy interviews</span>
+        <h3>The interviewee isn't the hire</h3>
+        <p>Proxy interviewing is endemic in contract staffing. If you didn't face-match them, you don't know who you're submitting.</p>
+      </div>
+      <div class="pain-card reveal d3">
+        <span class="tag">// your reputation</span>
+        <h3>The client counts your misses</h3>
+        <p>Every bad submission spends trust you can't buy back. The vendors who keep the account are the ones whose candidates keep clearing the panel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE MATH ============ -->
+<section style="padding-top:10px">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Do the math</span>
+      <h2>One panel round vs. one pre-screen.</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:44px" class="math-grid">
+      <div class="pain-card reveal d1">
+        <span class="tag" style="color:#B3261E">// unscreened submission</span>
+        <h3 style="font-size:26px">3–5 panel hours</h3>
+        <p>Senior engineers pulled off their roadmap to discover what a screen would have caught in 20 minutes — plus a miss the client remembers against your name.</p>
+      </div>
+      <div class="pain-card reveal d2" style="border:2px solid transparent;background:linear-gradient(var(--white),var(--white)) padding-box,linear-gradient(140deg,var(--brand-bright),var(--brand-deep)) border-box;box-shadow:0 26px 60px -26px var(--brand-glow)">
+        <span class="tag">// SimpleHire pre-screen</span>
+        <h3 style="font-size:26px">$5 · 20 minutes</h3>
+        <p>The candidate's time, not your panel's. Identity, work authorization, and real skills proven before the submission goes out.</p>
+      </div>
+    </div>
+    <div class="proctor-note reveal" style="margin-top:24px"><b>Your numbers will vary — the ratio won't.</b> One filtered no-go pays for the next hundred screens. And clients judge vendors on submission-to-interview ratio; screened submissions protect yours.</div>
+    <style>@media(max-width:760px){.math-grid{grid-template-columns:1fr!important}}</style>
+  </div>
+</section>
+
+<!-- ============ PHASE 1 ============ -->
+<section id="product" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="phase-pill"><span class="dot"></span>Phase 1 · Available now</span>
+      <h2>Three levels of interview engine. Pick per role.</h2>
+      <p class="sub">Every screen combines a role-adapted AI voice interview, knowledge questions, and — where the role needs it — a coding assessment run against real code execution. Not an AI guessing if the code works; the code actually runs.</p>
+    </div>
+
+    <div class="tiers">
+      <div class="tier reveal d1">
+        <span class="badge-free">START FREE</span>
+        <span class="lvl">Level 1</span>
+        <h3>Basic</h3>
+        <span class="spec">5 questions · 15 min</span>
+        <p>The fast filter. Confirms fundamentals and communication before anyone reads a resume twice.</p>
+        <ul>
+          <li>Role-adapted voice interview</li>
+          <li>Knowledge MCQs</li>
+          <li>Browser proctoring included</li>
+          <li>Instant screen report</li>
+        </ul>
+        <div class="price"><b>Free</b> <span>to start · capped trial</span></div>
+      </div>
+
+      <div class="tier featured reveal d2">
+        <span class="lvl">Level 2</span>
+        <h3>Adaptive</h3>
+        <span class="spec">Follow-ups · 20 min</span>
+        <p>The interview digs where the answers are thin. Up to two AI follow-ups per question, scored turn by turn.</p>
+        <ul>
+          <li>Everything in Basic</li>
+          <li>Adaptive follow-up questioning</li>
+          <li>Per-answer AI assessment</li>
+          <li>Coding assessment with live execution</li>
+        </ul>
+        <div class="price"><b>$5</b> <span>per interview · prepaid credit packs</span></div>
+      </div>
+
+      <div class="tier reveal d3">
+        <span class="lvl">Level 3</span>
+        <h3>Advanced</h3>
+        <span class="spec">Deep-dive · 30 min</span>
+        <p>For the roles you can't afford to get wrong. Deeper questioning, harder follow-ups, fuller evidence.</p>
+        <ul>
+          <li>Everything in Adaptive</li>
+          <li>Up to three follow-ups per question</li>
+          <li>Deep-dive on weak areas</li>
+          <li>Extended coding evaluation</li>
+        </ul>
+        <div class="price"><b>$12–18</b> <span>per interview</span></div>
+      </div>
+    </div>
+
+    <div class="proctor-note reveal">
+      <b>Browser proctoring runs on every level — including free.</b> Tab switching, copy-paste, and focus loss are monitored on every screen, so even a free result is a result you can trust.
+    </div>
+  </div>
+</section>
+
+<!-- ============ VERIFICATION ============ -->
+<section class="verify" id="verification">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div class="v-grid">
+      <div class="v-copy reveal">
+        <span class="eyebrow">What screening tools don't do</span>
+        <h2>We verify the person,<br>not just the answers.</h2>
+        <div class="item">
+          <h3>Identity, checked twice</h3>
+          <p>Government ID and selfie are verified by two independent engines and cross-validated — with biometric face match against the person actually sitting the interview.</p>
+        </div>
+        <div class="item">
+          <h3>Work authorization, confirmed up front</h3>
+          <p>US work-authorization and visa-status checks across 14 status types — the surprise that usually appears at offer stage, surfaced before submission.</p>
+        </div>
+        <div class="item">
+          <h3>Code that actually ran</h3>
+          <p>Coding answers execute against real test cases in 15 languages. The report shows pass/fail per test — evidence, not opinion.</p>
+        </div>
+        <div class="item">
+          <h3>A result the candidate carries</h3>
+          <p>With the candidate's consent, a passed screen becomes a portable verified profile they own. Strong candidates complete our screens because the result works for them too.</p>
+        </div>
+        <div class="item">
+          <h3>Proof that travels with the submission</h3>
+          <p>Attach the screen report when you submit. A candidate with verified evidence beats a bare resume from the competing vendor — every time.</p>
+        </div>
+      </div>
+      <div class="reveal d2">
+        <div class="ledger" role="table" aria-label="Verification ledger">
+          <div class="ledger-head">Verification ledger — every screen</div>
+          <div class="lrow"><span class="what">Government ID</span><span class="how">dual-engine cross-check</span></div>
+          <div class="lrow"><span class="what">Face match</span><span class="how">biometric, live session</span></div>
+          <div class="lrow"><span class="what">Work authorization</span><span class="how">14 visa status types</span></div>
+          <div class="lrow"><span class="what">Code execution</span><span class="how">real tests · 15 languages</span></div>
+          <div class="lrow"><span class="what">Browser integrity</span><span class="how">all tiers, incl. free</span></div>
+          <div class="lrow"><span class="what">Result certificate</span><span class="how">verifiable by ID, online</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STEPS ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">How it works</span>
+      <h2>Invite. Screen. Submit with confidence.</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal d1">
+        <span class="num">STEP 1</span>
+        <h3>Invite the candidate</h3>
+        <p>Paste the job requirement, send an invite link. The interview adapts itself to the role and the candidate's resume.</p>
+      </div>
+      <div class="step reveal d2">
+        <span class="num">STEP 2</span>
+        <h3>They screen, we verify</h3>
+        <p>Voice interview, MCQs, live-execution coding, proctoring, and identity checks run in one 15–30 minute session.</p>
+      </div>
+      <div class="step reveal d3">
+        <span class="num">STEP 3</span>
+        <h3>You decide in minutes</h3>
+        <p>A single screen report — scores, evidence, verification status. Shortlist, hold, or pass before any panel time is spent.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section id="pricing" style="padding-top:30px">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Pricing</span>
+      <h2>Priced so your team lead can say yes today.</h2>
+      <p class="sub">Free to prove it on real candidates. $5 per pre-screen after — sold as prepaid credit packs (e.g. 50 screens for $250), so it's one invoice, not fifty charges. Advanced screens $12–18. No platform fee, no annual contract.</p>
+      <div class="hero-ctas" style="margin-top:32px;opacity:1;animation:none">
+        <a class="btn btn-primary" href="#signup">Get your free screens</a>
+        <a class="btn btn-ghost" href="mailto:hello@simplehire.ai">Talk to us about credit packs</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ROADMAP ============ -->
+<section class="roadmap" id="roadmap" style="padding-top:30px">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="phase-pill soon">Phase 2 · On the roadmap</span>
+      <h2>Where this is going next.</h2>
+      <p class="sub">Phase 1 keeps bad candidates away from your panel. Phase 2 makes the whole pipeline yours.</p>
+    </div>
+    <div class="cards">
+      <div class="rcard reveal d1">
+        <span class="soon-tag">Coming</span>
+        <h3>Full proctoring suite</h3>
+        <p>Three further integrity levels — video analysis, desktop monitoring, and second-device proctoring — for screens where the stakes justify forensic confidence.</p>
+      </div>
+      <div class="rcard reveal d2">
+        <span class="soon-tag">Coming</span>
+        <h3>ATS integration</h3>
+        <p>Invite, screen, and read results without leaving your ATS. Bullhorn first, then the rest of your stack.</p>
+      </div>
+      <div class="rcard reveal d3">
+        <span class="soon-tag">Coming</span>
+        <h3>The verified pool</h3>
+        <p>Search candidates who are already SimpleHire-verified. When the credential exists, skip the screen entirely — and fill the role faster.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta-sec" id="signup">
+  <div class="wrap">
+    <div class="cta-band reveal">
+      <div>
+        <h2>Your next submission can carry proof.</h2>
+        <p>Set up in minutes, screen the candidates on your desk today, and submit only the ones you've proven — free to start.</p>
+      </div>
+      <a class="btn" href="mailto:hello@simplehire.ai?subject=Free%20screening%20access">Start screening free →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <a class="logo" href="#"><span class="logo-mark">S</span>SimpleHire</a>
+    <div class="fine">
+      SIMPLEHIRE TECHNOLOGIES INC · SAN FRANCISCO, CA<br>
+      NVIDIA INCEPTION MEMBER · CANDIDATES OWN THEIR VERIFIED RESULTS
+    </div>
+  </div>
+</footer>
+
+<script>
+// nav state
+const nav = document.getElementById('nav');
+addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 24), {passive:true});
+
+// scroll reveals
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, {threshold:.14});
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// credential mouse tilt (desktop, motion-safe)
+const cred = document.getElementById('cred');
+const motionOK = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (cred && motionOK && matchMedia('(pointer:fine)').matches) {
+  const wrap = cred.parentElement;
+  wrap.addEventListener('mousemove', e => {
+    const r = cred.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5;
+    const y = (e.clientY - r.top) / r.height - .5;
+    cred.style.transform = `rotateY(${x*7}deg) rotateX(${ -y*7}deg)`;
+  });
+  wrap.addEventListener('mouseleave', () => { cred.style.transform = ''; });
+}
+</script>
+</body>
+</html>

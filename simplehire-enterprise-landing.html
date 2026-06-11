@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SimpleHire — Only verified candidates reach your panel</title>
+<meta name="description" content="A verified pre-screen layer for recruiters. AI interviews, real code execution, identity and work-authorization verification — before a candidate ever reaches your hiring panel.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B1220;
+  --ink-2:#3C4658;
+  --paper:#F7F8FB;
+  --white:#FFFFFF;
+  --brand:#2563EB;
+  --brand-deep:#1B45C4;
+  --pass:#047857;
+  --flag:#B45309;
+  --line:#D9DEEA;
+  --line-soft:#E8ECF4;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --disp:'Archivo',sans-serif;
+  --body:'Public Sans',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);color:var(--ink);background:var(--paper);line-height:1.55;font-size:16px}
+::selection{background:var(--brand);color:#fff}
+a{color:inherit}
+img{max-width:100%}
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);font-weight:700}
+h1,h2,h3{font-family:var(--disp);line-height:1.05}
+h2{font-size:clamp(28px,4vw,44px);font-weight:800;letter-spacing:-.01em;font-stretch:105%}
+.sub{color:var(--ink-2);max-width:560px;margin-top:14px;font-size:17px}
+.btn{display:inline-block;font-family:var(--disp);font-weight:700;font-size:15px;padding:13px 26px;border-radius:8px;text-decoration:none;border:1.5px solid transparent;transition:transform .12s ease,box-shadow .12s ease;cursor:pointer}
+.btn:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.btn-primary{background:var(--brand);color:#fff;box-shadow:0 1px 0 var(--brand-deep),0 8px 20px -8px rgba(37,99,235,.55)}
+.btn-primary:hover{transform:translateY(-1px)}
+.btn-ghost{border-color:var(--line);color:var(--ink);background:var(--white)}
+.btn-ghost:hover{border-color:var(--ink)}
+
+/* ---------- NAV ---------- */
+nav{position:sticky;top:0;z-index:50;background:rgba(247,248,251,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-soft)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-family:var(--disp);font-weight:900;font-size:19px;letter-spacing:-.01em;text-decoration:none;display:flex;align-items:center;gap:8px}
+.logo-mark{width:26px;height:26px;border-radius:7px;background:var(--brand);display:grid;place-items:center;color:#fff;font-size:14px;font-weight:900}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{text-decoration:none;font-size:14.5px;font-weight:600;color:var(--ink-2)}
+.nav-links a:hover{color:var(--ink)}
+.nav-cta{font-size:14px!important;padding:9px 18px!important}
+@media(max-width:760px){.nav-links a:not(.btn){display:none}}
+
+/* ---------- HERO ---------- */
+.hero{padding:72px 0 84px;position:relative;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:44px}}
+.hero h1{font-size:clamp(38px,5.6vw,62px);font-weight:900;letter-spacing:-.02em;font-stretch:110%}
+.hero h1 em{font-style:normal;color:var(--brand)}
+.hero p.lead{margin-top:18px;font-size:18.5px;color:var(--ink-2);max-width:520px}
+.hero-ctas{margin-top:30px;display:flex;gap:14px;flex-wrap:wrap}
+.hero-note{margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+.hero-note b{color:var(--pass)}
+
+/* the credential — signature element */
+.cred{background:var(--white);border:1px solid var(--line);border-radius:14px;box-shadow:0 30px 60px -30px rgba(11,18,32,.25),0 2px 6px rgba(11,18,32,.05);padding:26px 26px 22px;position:relative;max-width:460px;margin-left:auto}
+@media(max-width:900px){.cred{margin:0 auto}}
+.cred-head{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1.5px dashed var(--line);padding-bottom:14px}
+.cred-head .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.cred-head .n{font-family:var(--disp);font-weight:800;font-size:19px;margin-top:3px}
+.cred-head .r{font-family:var(--mono);font-size:11px;color:var(--ink-2);text-align:right;line-height:1.7}
+.cred-rows{margin-top:14px;display:flex;flex-direction:column;gap:9px}
+.crow{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:12.5px}
+.crow .k{color:var(--ink-2)}
+.crow .v{font-weight:700;display:flex;align-items:center;gap:7px}
+.ok{color:var(--pass)}
+.score{color:var(--ink)}
+.dotline{flex:1;border-bottom:1.5px dotted var(--line);margin:0 12px;transform:translateY(3px)}
+.cred-foot{margin-top:16px;padding-top:14px;border-top:1.5px dashed var(--line);display:flex;justify-content:space-between;align-items:center}
+.cred-foot .id{font-family:var(--mono);font-size:10.5px;color:var(--ink-2);line-height:1.8}
+.stamp{width:96px;height:96px;border-radius:50%;border:2.5px solid var(--pass);color:var(--pass);display:grid;place-items:center;text-align:center;font-family:var(--disp);font-weight:900;font-size:13px;letter-spacing:.08em;transform:rotate(-12deg);position:absolute;right:18px;bottom:64px;background:rgba(255,255,255,.85);box-shadow:inset 0 0 0 4px rgba(4,120,87,.12);animation:stampIn .5s cubic-bezier(.2,1.4,.4,1) .6s both}
+.stamp small{display:block;font-family:var(--mono);font-weight:500;font-size:8.5px;letter-spacing:.1em;margin-top:2px}
+@keyframes stampIn{from{opacity:0;transform:rotate(-12deg) scale(1.8)}to{opacity:1;transform:rotate(-12deg) scale(1)}}
+@media (prefers-reduced-motion:reduce){.stamp{animation:none}}
+
+/* ---------- PAIN STRIP ---------- */
+.pain{background:var(--ink);color:#E8ECF4;padding:54px 0}
+.pain .eyebrow{color:#7DA2F7}
+.pain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:36px;margin-top:26px}
+@media(max-width:820px){.pain-grid{grid-template-columns:1fr}}
+.pain h3{font-size:18px;font-weight:800;margin-bottom:8px;font-stretch:105%}
+.pain p{font-size:14.5px;color:#9AA7BE}
+.pain .tag{font-family:var(--mono);font-size:11px;color:#7DA2F7;display:block;margin-bottom:10px}
+
+/* ---------- SECTIONS ---------- */
+section{padding:88px 0}
+.sec-head{max-width:640px}
+.phase-pill{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:6px 13px;border-radius:99px;border:1.5px solid var(--brand);color:var(--brand);margin-bottom:16px}
+.phase-pill.soon{border-color:var(--line);color:var(--ink-2);background:var(--white)}
+
+/* tiers */
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px}
+@media(max-width:880px){.tiers{grid-template-columns:1fr}}
+.tier{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:28px;display:flex;flex-direction:column;position:relative}
+.tier.featured{border:2px solid var(--brand);box-shadow:0 20px 44px -24px rgba(37,99,235,.4)}
+.tier .lvl{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--ink-2);text-transform:uppercase}
+.tier h3{font-size:23px;font-weight:800;margin-top:8px;font-stretch:105%}
+.tier .spec{font-family:var(--mono);font-size:12px;color:var(--brand);margin-top:6px;font-weight:700}
+.tier p{font-size:14.5px;color:var(--ink-2);margin-top:12px}
+.tier ul{list-style:none;margin-top:18px;display:flex;flex-direction:column;gap:9px;flex:1}
+.tier li{font-size:14px;padding-left:24px;position:relative;color:var(--ink)}
+.tier li::before{content:"✓";position:absolute;left:0;color:var(--pass);font-weight:700}
+.tier .price{margin-top:22px;padding-top:18px;border-top:1.5px dashed var(--line);font-family:var(--disp)}
+.tier .price b{font-size:26px;font-weight:900}
+.tier .price span{font-size:13px;color:var(--ink-2);font-family:var(--body)}
+.badge-free{position:absolute;top:-12px;right:20px;background:var(--pass);color:#fff;font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.1em;padding:5px 12px;border-radius:99px}
+.proctor-note{margin-top:22px;background:var(--white);border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:10px;padding:18px 22px;font-size:14.5px;color:var(--ink-2)}
+.proctor-note b{color:var(--ink)}
+
+/* verification ledger */
+.verify{background:var(--white);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+.v-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;margin-top:8px}
+@media(max-width:880px){.v-grid{grid-template-columns:1fr;gap:40px}}
+.ledger{font-family:var(--mono);border:1.5px solid var(--ink);border-radius:12px;overflow:hidden}
+.ledger-head{background:var(--ink);color:#fff;padding:13px 20px;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.lrow{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;border-bottom:1px solid var(--line-soft);font-size:13px;background:var(--white)}
+.lrow:last-child{border-bottom:none}
+.lrow .what{font-weight:500}
+.lrow .how{color:var(--ink-2);font-size:11.5px}
+.v-copy h2{margin-bottom:6px}
+.v-copy .item{margin-top:26px}
+.v-copy .item h3{font-size:17px;font-weight:800;font-stretch:105%}
+.v-copy .item p{font-size:14.5px;color:var(--ink-2);margin-top:6px;max-width:440px}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px}
+@media(max-width:820px){.steps{grid-template-columns:1fr}}
+.step{border-top:3px solid var(--brand);background:var(--white);border-left:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:0 0 12px 12px;padding:26px}
+.step .num{font-family:var(--mono);font-size:12px;color:var(--brand);font-weight:700}
+.step h3{font-size:19px;font-weight:800;margin-top:10px;font-stretch:105%}
+.step p{font-size:14.5px;color:var(--ink-2);margin-top:8px}
+
+/* roadmap */
+.roadmap .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px}
+@media(max-width:880px){.roadmap .cards{grid-template-columns:1fr}}
+.rcard{background:linear-gradient(180deg,var(--white),#F2F5FB);border:1.5px dashed var(--line);border-radius:14px;padding:28px;position:relative}
+.rcard .soon-tag{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--ink-2);text-transform:uppercase;border:1px solid var(--line);border-radius:99px;padding:4px 10px;display:inline-block;background:var(--white)}
+.rcard h3{font-size:19px;font-weight:800;margin-top:14px;font-stretch:105%}
+.rcard p{font-size:14.5px;color:var(--ink-2);margin-top:8px}
+
+/* cta band */
+.cta-band{background:var(--brand);color:#fff;border-radius:18px;padding:56px 48px;display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap;box-shadow:0 30px 60px -30px rgba(37,99,235,.6)}
+.cta-band h2{font-stretch:110%}
+.cta-band p{margin-top:10px;color:#D6E2FC;max-width:460px}
+.cta-band .btn{background:#fff;color:var(--brand)}
+
+/* footer */
+footer{padding:44px 0 56px;border-top:1px solid var(--line-soft);margin-top:40px}
+.foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center}
+.foot .fine{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);line-height:1.9}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <a class="logo" href="#"><span class="logo-mark">S</span>SimpleHire</a>
+    <div class="nav-links">
+      <a href="#product">Interview engine</a>
+      <a href="#verification">Verification</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#roadmap">Roadmap</a>
+      <a class="btn btn-primary nav-cta" href="#signup">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Before you submit — prove them</span>
+      <h1>Don't make your <em>panel</em> do the screening.</h1>
+      <p class="lead">Every unqualified candidate you submit burns panel hours and spends your credibility. SimpleHire proves the candidate is real, work-authorized, and able — in one 20-minute screen — before the submission goes out under your name.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#signup">Screen your next candidate free</a>
+        <a class="btn btn-ghost" href="#product">See how it works</a>
+      </div>
+      <p class="hero-note">No procurement required · Approve on a team budget · <b>First screens free</b></p>
+    </div>
+
+    <!-- signature element: the verification report -->
+    <div class="cred" aria-label="Example candidate verification report">
+      <div class="cred-head">
+        <div>
+          <div class="t">Candidate Screen Report</div>
+          <div class="n">A. Sharma — Java Backend</div>
+        </div>
+        <div class="r">REQ-2031<br>Jun 2026</div>
+      </div>
+      <div class="cred-rows">
+        <div class="crow"><span class="k">Identity check</span><span class="dotline"></span><span class="v ok">VERIFIED ✓</span></div>
+        <div class="crow"><span class="k">Work authorization</span><span class="dotline"></span><span class="v ok">CONFIRMED ✓</span></div>
+        <div class="crow"><span class="k">Voice interview</span><span class="dotline"></span><span class="v score">8.4 / 10</span></div>
+        <div class="crow"><span class="k">Coding — live execution</span><span class="dotline"></span><span class="v score">PASS · 12/14 tests</span></div>
+        <div class="crow"><span class="k">Knowledge MCQ</span><span class="dotline"></span><span class="v score">82%</span></div>
+        <div class="crow"><span class="k">Browser proctoring</span><span class="dotline"></span><span class="v ok">CLEAN ✓</span></div>
+      </div>
+      <div class="cred-foot">
+        <div class="id">CERT ID SH-7F42-K1<br>VERIFY AT SIMPLEHIRE.AI/VERIFY</div>
+      </div>
+      <div class="stamp">VERIFIED<small>SIMPLEHIRE</small></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ PAIN ============ -->
+<div class="pain">
+  <div class="wrap">
+    <span class="eyebrow">Why screen before you submit</span>
+    <div class="pain-grid">
+      <div>
+        <span class="tag">// resume fraud</span>
+        <h3>The resume isn't the person</h3>
+        <p>AI writes the resume now. What's on paper no longer predicts who shows up — and the panel finds out on your dime.</p>
+      </div>
+      <div>
+        <span class="tag">// proxy interviews</span>
+        <h3>The interviewee isn't the hire</h3>
+        <p>Proxy interviewing is endemic in contract staffing. If you didn't face-match them, you don't know who you're submitting.</p>
+      </div>
+      <div>
+        <span class="tag">// your reputation</span>
+        <h3>The client counts your misses</h3>
+        <p>Every bad submission spends trust you can't buy back. The vendors who keep the account are the ones whose candidates keep clearing the panel.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ THE MATH ============ -->
+<section style="padding:80px 0 0">
+  <div class="wrap">
+    <span class="eyebrow">Do the math</span>
+    <h2 style="margin-top:10px">One panel round vs. one pre-screen.</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:36px" class="math-grid">
+      <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px">
+        <div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)">An unscreened submission</div>
+        <div style="font-family:var(--disp);font-weight:900;font-size:30px;margin-top:10px">3–5 panel hours</div>
+        <p style="font-size:14.5px;color:var(--ink-2);margin-top:10px">Senior engineers pulled off their roadmap to discover what a screen would have caught in 20 minutes — plus a miss the client remembers against your name.</p>
+      </div>
+      <div style="background:#fff;border:2px solid var(--brand);border-radius:14px;padding:26px;box-shadow:0 20px 44px -24px rgba(37,99,235,.4)">
+        <div style="font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--brand)">A SimpleHire pre-screen</div>
+        <div style="font-family:var(--disp);font-weight:900;font-size:30px;margin-top:10px">$5 · 20 minutes</div>
+        <p style="font-size:14.5px;color:var(--ink-2);margin-top:10px">The candidate's time, not your panel's. Identity, work authorization, and real skills proven before the submission goes out.</p>
+      </div>
+    </div>
+    <div class="proctor-note" style="margin-top:20px"><b>Your numbers will vary — the ratio won't.</b> One filtered no-go pays for the next hundred screens. And clients judge vendors on submission-to-interview ratio; screened submissions protect yours.</div>
+    <style>@media(max-width:760px){.math-grid{grid-template-columns:1fr!important}}</style>
+  </div>
+</section>
+
+<!-- ============ PHASE 1: INTERVIEW ENGINE ============ -->
+<section id="product">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="phase-pill">Phase 1 · Available now</span>
+      <h2>Three levels of interview engine. Pick per role.</h2>
+      <p class="sub">Every screen combines a role-adapted AI voice interview, knowledge questions, and — where the role needs it — a coding assessment run against real code execution. Not an AI guessing if the code works; the code actually runs.</p>
+    </div>
+
+    <div class="tiers">
+      <div class="tier">
+        <span class="badge-free">START FREE</span>
+        <span class="lvl">Level 1</span>
+        <h3>Basic</h3>
+        <span class="spec">5 questions · 15 min</span>
+        <p>The fast filter. Confirms fundamentals and communication before anyone reads a resume twice.</p>
+        <ul>
+          <li>Role-adapted voice interview</li>
+          <li>Knowledge MCQs</li>
+          <li>Browser proctoring included</li>
+          <li>Instant screen report</li>
+        </ul>
+        <div class="price"><b>Free</b> <span>to start · capped trial</span></div>
+      </div>
+
+      <div class="tier featured">
+        <span class="lvl">Level 2</span>
+        <h3>Adaptive</h3>
+        <span class="spec">Follow-ups · 20 min</span>
+        <p>The interview digs where the answers are thin. Up to two AI follow-ups per question, scored turn by turn.</p>
+        <ul>
+          <li>Everything in Basic</li>
+          <li>Adaptive follow-up questioning</li>
+          <li>Per-answer AI assessment</li>
+          <li>Coding assessment with live execution</li>
+        </ul>
+        <div class="price"><b>$5</b> <span>per interview · prepaid credit packs</span></div>
+      </div>
+
+      <div class="tier">
+        <span class="lvl">Level 3</span>
+        <h3>Advanced</h3>
+        <span class="spec">Deep-dive · 30 min</span>
+        <p>For the roles you can't afford to get wrong. Deeper questioning, harder follow-ups, fuller evidence.</p>
+        <ul>
+          <li>Everything in Adaptive</li>
+          <li>Up to three follow-ups per question</li>
+          <li>Deep-dive on weak areas</li>
+          <li>Extended coding evaluation</li>
+        </ul>
+        <div class="price"><b>$12–18</b> <span>per interview</span></div>
+      </div>
+    </div>
+
+    <div class="proctor-note">
+      <b>Browser proctoring runs on every level — including free.</b> Tab switching, copy-paste, and focus loss are monitored on every screen, so even a free result is a result you can trust.
+    </div>
+  </div>
+</section>
+
+<!-- ============ VERIFICATION ============ -->
+<section class="verify" id="verification">
+  <div class="wrap">
+    <div class="v-grid">
+      <div class="v-copy">
+        <span class="eyebrow">What screening tools don't do</span>
+        <h2>We verify the person, not just the answers.</h2>
+        <div class="item">
+          <h3>Identity, checked twice</h3>
+          <p>Government ID and selfie are verified by two independent engines and cross-validated — with biometric face match against the person actually sitting the interview.</p>
+        </div>
+        <div class="item">
+          <h3>Work authorization, confirmed up front</h3>
+          <p>US work-authorization and visa-status checks across 14 status types — the surprise that usually appears at offer stage, surfaced before submission.</p>
+        </div>
+        <div class="item">
+          <h3>Code that actually ran</h3>
+          <p>Coding answers execute against real test cases in 15 languages. The report shows pass/fail per test — evidence, not opinion.</p>
+        </div>
+        <div class="item">
+          <h3>A result the candidate carries</h3>
+          <p>With the candidate's consent, a passed screen becomes a portable verified profile they own. Strong candidates complete our screens because the result works for them too.</p>
+        </div>
+        <div class="item">
+          <h3>Proof that travels with the submission</h3>
+          <p>Attach the screen report when you submit. A candidate with verified evidence beats a bare resume from the competing vendor — every time.</p>
+        </div>
+      </div>
+      <div>
+        <div class="ledger" role="table" aria-label="Verification ledger">
+          <div class="ledger-head">Verification ledger — every screen</div>
+          <div class="lrow"><span class="what">Government ID</span><span class="how">dual-engine cross-check</span></div>
+          <div class="lrow"><span class="what">Face match</span><span class="how">biometric, live session</span></div>
+          <div class="lrow"><span class="what">Work authorization</span><span class="how">14 visa status types</span></div>
+          <div class="lrow"><span class="what">Code execution</span><span class="how">real tests · 15 languages</span></div>
+          <div class="lrow"><span class="what">Browser integrity</span><span class="how">all tiers, incl. free</span></div>
+          <div class="lrow"><span class="what">Result certificate</span><span class="how">verifiable by ID, online</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">How it works</span>
+      <h2>Invite. Screen. Submit with confidence.</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="num">STEP 1</span>
+        <h3>Invite the candidate</h3>
+        <p>Paste the job requirement, send an invite link. The interview adapts itself to the role and the candidate's resume.</p>
+      </div>
+      <div class="step">
+        <span class="num">STEP 2</span>
+        <h3>They screen, we verify</h3>
+        <p>Voice interview, MCQs, live-execution coding, proctoring, and identity checks run in one 15–30 minute session.</p>
+      </div>
+      <div class="step">
+        <span class="num">STEP 3</span>
+        <h3>You decide in minutes</h3>
+        <p>A single screen report — scores, evidence, verification status. Shortlist, hold, or pass before any panel time is spent.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="verify" id="pricing">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Pricing</span>
+      <h2>Priced so your team lead can say yes today.</h2>
+      <p class="sub">Free to prove it on real candidates. $5 per pre-screen after — sold as prepaid credit packs (e.g. 50 screens for $250), so it's one invoice, not fifty charges. Advanced screens $12–18. No platform fee, no annual contract.</p>
+    </div>
+    <div class="hero-ctas" style="margin-top:30px">
+      <a class="btn btn-primary" href="#signup">Get your free screens</a>
+      <a class="btn btn-ghost" href="mailto:hello@simplehire.ai">Talk to us about credit packs</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PHASE 2 ROADMAP ============ -->
+<section class="roadmap" id="roadmap">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="phase-pill soon">Phase 2 · On the roadmap</span>
+      <h2>Where this is going next.</h2>
+      <p class="sub">Phase 1 keeps bad candidates away from your panel. Phase 2 makes the whole pipeline yours.</p>
+    </div>
+    <div class="cards">
+      <div class="rcard">
+        <span class="soon-tag">Coming</span>
+        <h3>Full proctoring suite</h3>
+        <p>Three further integrity levels — video analysis, desktop monitoring, and second-device proctoring — for screens where the stakes justify forensic confidence.</p>
+      </div>
+      <div class="rcard">
+        <span class="soon-tag">Coming</span>
+        <h3>ATS integration</h3>
+        <p>Invite, screen, and read results without leaving your ATS. Bullhorn first, then the rest of your stack.</p>
+      </div>
+      <div class="rcard">
+        <span class="soon-tag">Coming</span>
+        <h3>The verified pool</h3>
+        <p>Search candidates who are already SimpleHire-verified. When the credential exists, skip the screen entirely — and fill the role faster.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section id="signup" style="padding-top:20px">
+  <div class="wrap">
+    <div class="cta-band">
+      <div>
+        <h2>Your next submission can carry proof.</h2>
+        <p>Set up in minutes, screen the candidates on your desk today, and submit only the ones you've proven — free to start.</p>
+      </div>
+      <a class="btn" href="mailto:hello@simplehire.ai?subject=Free%20screening%20access">Start screening free →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <a class="logo" href="#"><span class="logo-mark">S</span>SimpleHire</a>
+    <div class="fine">
+      SIMPLEHIRE TECHNOLOGIES INC · SAN FRANCISCO, CA<br>
+      NVIDIA INCEPTION MEMBER · CANDIDATES OWN THEIR VERIFIED RESULTS
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

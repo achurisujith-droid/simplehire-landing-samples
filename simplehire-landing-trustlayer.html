@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SimpleHire — The Trust Layer for the AI Hiring Era</title>
+<meta name="description" content="AI writes the resumes. AI fakes the interviews. SimpleHire is the intelligence layer that verifies the human — identity, skill, and work authorization, computed into one portable trust signal.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+@property --ang{syntax:'<angle>';initial-value:0deg;inherits:false}
+:root{
+  --void:#04060D;
+  --void-2:#070B17;
+  --panel:rgba(13,20,40,.55);
+  --txt:#E9EEFB;
+  --dim:#8E9AB8;
+  --faint:rgba(233,238,251,.10);
+  --blue:#2563EB;
+  --lumen:#60A5FA;
+  --cyan:#67E8F9;
+  --violet:#A78BFA;
+  --good:#34D399;
+  --disp:'Unbounded',sans-serif;
+  --body:'Outfit',sans-serif;
+  --hud:'Share Tech Mono',monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);color:var(--txt);background:var(--void);line-height:1.6;font-size:16.5px;overflow-x:hidden}
+::selection{background:var(--lumen);color:var(--void)}
+a{color:inherit}
+.wrap{max-width:1160px;margin:0 auto;padding:0 28px}
+h1,h2,h3{font-family:var(--disp);line-height:1.12;letter-spacing:-.01em}
+h2{font-size:clamp(26px,3.6vw,42px);font-weight:700}
+.grad{background:linear-gradient(95deg,var(--lumen) 0%,var(--cyan) 50%,var(--violet) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hud{font-family:var(--hud);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan)}
+.sub{color:var(--dim);max-width:620px;margin-top:18px;font-size:17px}
+
+/* ambient field */
+.field{position:fixed;inset:0;z-index:-2;background:
+  radial-gradient(900px 600px at 80% -10%,rgba(37,99,235,.22),transparent 60%),
+  radial-gradient(700px 500px at 8% 30%,rgba(167,139,250,.13),transparent 60%),
+  radial-gradient(800px 600px at 50% 110%,rgba(103,232,249,.10),transparent 60%);
+  animation:breathe 12s ease-in-out infinite alternate}
+@keyframes breathe{to{opacity:.7;transform:scale(1.04)}}
+.stars{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.6}
+.stars::before{content:"";position:absolute;inset:0;background-image:
+  radial-gradient(1px 1px at 12% 22%,rgba(233,238,251,.8),transparent 50%),
+  radial-gradient(1px 1px at 68% 12%,rgba(233,238,251,.5),transparent 50%),
+  radial-gradient(1.5px 1.5px at 84% 64%,rgba(103,232,249,.7),transparent 50%),
+  radial-gradient(1px 1px at 32% 78%,rgba(233,238,251,.5),transparent 50%),
+  radial-gradient(1px 1px at 52% 42%,rgba(167,139,250,.6),transparent 50%),
+  radial-gradient(1.5px 1.5px at 92% 32%,rgba(233,238,251,.6),transparent 50%),
+  radial-gradient(1px 1px at 22% 54%,rgba(103,232,249,.5),transparent 50%);
+  animation:twinkle 6s ease-in-out infinite alternate}
+@keyframes twinkle{to{opacity:.45}}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--disp);font-weight:600;font-size:13.5px;letter-spacing:.04em;padding:16px 30px;border-radius:99px;text-decoration:none;position:relative;transition:transform .25s var(--ease),box-shadow .25s var(--ease);cursor:pointer}
+.btn:focus-visible{outline:2px solid var(--cyan);outline-offset:4px}
+.btn-glow{color:#fff;background:linear-gradient(95deg,var(--blue),#4338CA);box-shadow:0 0 0 1px rgba(96,165,250,.5),0 0 34px -6px rgba(37,99,235,.8),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn-glow:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(96,165,250,.9),0 0 54px -6px rgba(37,99,235,1),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn-line{color:var(--txt);border:1px solid rgba(233,238,251,.22);background:rgba(233,238,251,.03);backdrop-filter:blur(8px)}
+.btn-line:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-2px)}
+
+/* nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:90;transition:.35s}
+nav.on{background:rgba(4,6,13,.7);backdrop-filter:blur(16px);border-bottom:1px solid var(--faint)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:72px}
+.logo{font-family:var(--disp);font-weight:700;font-size:17px;text-decoration:none;display:flex;align-items:center;gap:11px}
+.orb{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 32% 30%,var(--cyan),var(--blue) 60%,#1E3A8A);box-shadow:0 0 18px -2px rgba(96,165,250,.9);position:relative}
+.orb::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(103,232,249,.45);animation:orbit 5s linear infinite}
+@keyframes orbit{to{transform:rotate(360deg) }}
+.nav-links{display:flex;gap:30px;align-items:center;font-size:14.5px;font-weight:500;color:var(--dim)}
+.nav-links a{text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--cyan)}
+.nav-cta{font-size:12px!important;padding:11px 22px!important}
+@media(max-width:800px){.nav-links a:not(.btn){display:none}}
+
+/* ---------- HERO ---------- */
+.hero{min-height:100svh;display:flex;align-items:center;padding:140px 0 90px;position:relative}
+.hero-grid{display:grid;grid-template-columns:1.04fr .96fr;gap:54px;align-items:center;width:100%}
+@media(max-width:960px){.hero-grid{grid-template-columns:1fr;gap:64px}}
+.hero .hud-line{display:flex;align-items:center;gap:12px;opacity:0;animation:up .8s var(--ease) .1s forwards}
+.hero .hud-line::before{content:"";width:34px;height:1px;background:var(--cyan)}
+.hero h1{font-size:clamp(34px,4.9vw,58px);font-weight:700;margin-top:22px}
+.hero h1 .ln{display:block;opacity:0;transform:translateY(28px);animation:up .8s var(--ease) forwards}
+.hero h1 .ln:nth-child(1){animation-delay:.2s}
+.hero h1 .ln:nth-child(2){animation-delay:.34s}
+@keyframes up{to{opacity:1;transform:none}}
+.hero .lead{margin-top:22px;font-size:18px;color:var(--dim);max-width:500px;opacity:0;animation:up .8s var(--ease) .5s forwards}
+.hero-ctas{margin-top:34px;display:flex;gap:16px;flex-wrap:wrap;opacity:0;animation:up .8s var(--ease) .65s forwards}
+.hero-tags{margin-top:30px;display:flex;gap:10px;flex-wrap:wrap;opacity:0;animation:up .8s var(--ease) .8s forwards}
+.tagchip{font-family:var(--hud);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);border:1px solid var(--faint);border-radius:99px;padding:7px 14px;background:rgba(233,238,251,.02)}
+
+/* ---------- identity core (signature) ---------- */
+.core-wrap{position:relative;display:grid;place-items:center;opacity:0;animation:up 1s var(--ease) .35s forwards}
+.core{position:relative;width:min(380px,84vw);aspect-ratio:1}
+.ring{position:absolute;inset:0;border-radius:50%;border:1px dashed rgba(96,165,250,.35);animation:spin 24s linear infinite}
+.ring.r2{inset:9%;border:1px solid rgba(103,232,249,.22);animation:spin 17s linear infinite reverse}
+.ring.r3{inset:20%;border:1px dashed rgba(167,139,250,.3);animation:spin 12s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.node{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan);top:-4.5px;left:calc(50% - 4.5px)}
+.ring.r3 .node{background:var(--violet);box-shadow:0 0 12px var(--violet)}
+.core-center{position:absolute;inset:29%;border-radius:50%;background:radial-gradient(circle at 36% 30%,rgba(103,232,249,.28),rgba(37,99,235,.18) 45%,rgba(4,6,13,.4) 75%);border:1px solid rgba(96,165,250,.5);box-shadow:0 0 70px -10px rgba(37,99,235,.85),inset 0 0 36px rgba(37,99,235,.4);display:grid;place-items:center;overflow:hidden}
+.core-center svg{width:46%;opacity:.95}
+.scanline{position:absolute;left:6%;right:6%;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);box-shadow:0 0 16px var(--cyan);animation:scan 2.6s ease-in-out infinite;border-radius:99px}
+@keyframes scan{0%,100%{top:14%}50%{top:84%}}
+.trust{position:absolute;inset:auto;bottom:-6px;left:50%;transform:translateX(-50%);text-align:center}
+.trust .tv{font-family:var(--disp);font-weight:800;font-size:34px;background:linear-gradient(95deg,var(--lumen),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+.trust .tl{font-family:var(--hud);font-size:9.5px;letter-spacing:.3em;color:var(--dim);text-transform:uppercase;margin-top:2px}
+/* hud readouts */
+.readout{position:absolute;font-family:var(--hud);font-size:11px;letter-spacing:.1em;color:var(--txt);background:var(--panel);border:1px solid rgba(96,165,250,.35);border-radius:8px;padding:9px 13px;backdrop-filter:blur(10px);white-space:nowrap;box-shadow:0 8px 30px -12px rgba(0,0,0,.8);opacity:0;animation:up .6s var(--ease) forwards}
+.readout .lab{color:var(--dim);margin-right:8px}
+.readout .ok{color:var(--good)}
+.ro1{top:6%;left:-6%;animation-delay:1.2s}
+.ro2{top:34%;right:-12%;animation-delay:1.6s}
+.ro3{bottom:26%;left:-12%;animation-delay:2.0s}
+.ro4{bottom:6%;right:-4%;animation-delay:2.4s}
+@media(max-width:560px){.ro1{left:0}.ro2{right:0}.ro3{left:0}.ro4{right:0}}
+
+/* ---------- flux strip ---------- */
+.flux{border-top:1px solid var(--faint);border-bottom:1px solid var(--faint);padding:16px 0;overflow:hidden;background:rgba(233,238,251,.015)}
+.flux-track{display:flex;width:max-content;animation:marq 34s linear infinite}
+.flux:hover .flux-track{animation-play-state:paused}
+@keyframes marq{to{transform:translateX(-50%)}}
+.flux span{font-family:var(--hud);font-size:11.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim);padding:0 34px;white-space:nowrap}
+.flux span i{font-style:normal;color:var(--cyan);margin-left:34px}
+
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(30px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}
+
+section{padding:110px 0;position:relative}
+.sec-tag{display:inline-flex;align-items:center;gap:10px;font-family:var(--hud);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--cyan)}
+.sec-tag::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+
+/* glass cards + holo border */
+.glass{background:var(--panel);border:1px solid var(--faint);border-radius:18px;backdrop-filter:blur(14px);transition:transform .3s var(--ease),border-color .3s}
+.glass:hover{transform:translateY(-6px);border-color:rgba(96,165,250,.45)}
+.holo{position:relative;border-radius:18px;background:
+  linear-gradient(var(--void-2),var(--void-2)) padding-box,
+  conic-gradient(from var(--ang),rgba(96,165,250,.0) 0%,var(--lumen) 18%,var(--cyan) 32%,rgba(96,165,250,0) 50%,var(--violet) 78%,rgba(96,165,250,0) 100%) border-box;
+  border:1.5px solid transparent;animation:holo 6s linear infinite}
+@keyframes holo{to{--ang:360deg}}
+
+/* signal grid (the era) */
+.era{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:50px}
+@media(max-width:880px){.era{grid-template-columns:1fr}}
+.era .glass{padding:30px}
+.era .sig{font-family:var(--hud);font-size:10.5px;letter-spacing:.2em;color:#F87171;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.era .sig::before{content:"";width:7px;height:7px;border-radius:50%;background:#F87171;box-shadow:0 0 10px #F87171;animation:pulse 1.8s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.era h3{font-size:19px;font-weight:600;margin-top:16px}
+.era p{font-size:14.5px;color:var(--dim);margin-top:10px}
+
+/* engines */
+.engines{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px}
+@media(max-width:920px){.engines{grid-template-columns:1fr}}
+.engine{padding:32px;border-radius:18px}
+.engine .eid{font-family:var(--hud);font-size:10.5px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
+.engine h3{font-size:20px;font-weight:700;margin-top:14px}
+.engine h3 span{display:block;font-size:12.5px;font-family:var(--hud);letter-spacing:.14em;color:var(--cyan);margin-top:7px;font-weight:400}
+.engine p{font-size:14.5px;color:var(--dim);margin-top:12px}
+.engine ul{list-style:none;margin-top:18px;display:flex;flex-direction:column;gap:9px}
+.engine li{font-family:var(--hud);font-size:12px;letter-spacing:.04em;padding-left:22px;position:relative;color:var(--txt)}
+.engine li::before{content:"▮";position:absolute;left:0;color:var(--lumen);font-size:10px}
+
+/* modes (tiers) */
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px}
+@media(max-width:920px){.modes{grid-template-columns:1fr}}
+.mode{padding:32px;display:flex;flex-direction:column}
+.mode .mtag{font-family:var(--hud);font-size:10.5px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase}
+.mode h3{font-size:24px;font-weight:700;margin-top:12px}
+.mode .mspec{font-family:var(--hud);font-size:11.5px;color:var(--cyan);margin-top:6px;letter-spacing:.08em}
+.mode p{font-size:14.5px;color:var(--dim);margin-top:12px}
+.mode ul{list-style:none;margin-top:18px;display:flex;flex-direction:column;gap:9px;flex:1}
+.mode li{font-size:14px;padding-left:24px;position:relative}
+.mode li::before{content:"◇";position:absolute;left:0;color:var(--good)}
+.mode .mfee{margin-top:24px;padding-top:18px;border-top:1px solid var(--faint);display:flex;align-items:baseline;gap:10px}
+.mode .mfee b{font-family:var(--disp);font-size:27px;font-weight:800}
+.mode .mfee span{font-size:12.5px;color:var(--dim)}
+.freechip{align-self:flex-start;font-family:var(--hud);font-size:10px;letter-spacing:.16em;color:var(--good);border:1px solid rgba(52,211,153,.5);border-radius:99px;padding:5px 12px;text-transform:uppercase;margin-bottom:14px;box-shadow:0 0 16px -6px rgba(52,211,153,.8)}
+.beam-note{margin-top:30px;border-radius:14px;border:1px solid var(--faint);border-left:3px solid var(--cyan);padding:20px 26px;font-size:14.5px;color:var(--dim);background:var(--panel);backdrop-filter:blur(10px)}
+.beam-note b{color:var(--txt)}
+
+/* sequence */
+.seq{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:52px;position:relative}
+@media(max-width:880px){.seq{grid-template-columns:1fr;gap:30px}}
+.seq::before{content:"";position:absolute;top:23px;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,var(--lumen),var(--violet),transparent);opacity:.6}
+@media(max-width:880px){.seq::before{display:none}}
+.sq{padding:0 26px;text-align:center}
+.sq .dotn{width:46px;height:46px;border-radius:50%;border:1px solid rgba(96,165,250,.5);background:var(--void-2);display:grid;place-items:center;margin:0 auto;font-family:var(--hud);font-size:13px;color:var(--cyan);box-shadow:0 0 22px -6px rgba(37,99,235,.9);position:relative;z-index:1}
+.sq h3{font-size:18px;font-weight:600;margin-top:20px}
+.sq p{font-size:14px;color:var(--dim);margin-top:9px;max-width:300px;margin-left:auto;margin-right:auto}
+
+/* horizon */
+.horizon{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px}
+@media(max-width:920px){.horizon{grid-template-columns:1fr}}
+.hz{padding:30px;border-radius:18px;border:1px dashed rgba(167,139,250,.4);background:rgba(167,139,250,.04);transition:transform .3s var(--ease),border-color .3s}
+.hz:hover{transform:translateY(-6px);border-color:var(--violet)}
+.hz .htag{font-family:var(--hud);font-size:10px;letter-spacing:.2em;color:var(--violet);text-transform:uppercase}
+.hz h3{font-size:19px;font-weight:600;margin-top:14px}
+.hz p{font-size:14.5px;color:var(--dim);margin-top:10px}
+
+/* portal CTA */
+.portal{padding:130px 0 150px;text-align:center;position:relative;overflow:hidden}
+.portal::before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:760px;height:760px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.3),transparent 65%);filter:blur(40px);animation:breathe 8s ease-in-out infinite alternate}
+.portal h2{font-size:clamp(30px,5vw,54px);position:relative}
+.portal p{font-family:var(--hud);font-size:12px;letter-spacing:.22em;color:var(--dim);margin-top:20px;text-transform:uppercase;position:relative}
+.portal .btn{margin-top:40px;position:relative;font-size:15px;padding:19px 42px}
+
+footer{border-top:1px solid var(--faint);padding:46px 0 60px}
+.foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center}
+.foot .fine{font-family:var(--hud);font-size:10.5px;letter-spacing:.16em;color:var(--dim);line-height:2.1;text-transform:uppercase;text-align:right}
+@media(max-width:640px){.foot .fine{text-align:left}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .hero .hud-line,.hero h1 .ln,.hero .lead,.hero-ctas,.hero-tags,.core-wrap,.readout{opacity:1;transform:none}
+  .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="field"></div>
+<div class="stars"></div>
+
+<nav id="nav">
+  <div class="wrap nav-in">
+    <a class="logo" href="#"><span class="orb"></span>SimpleHire</a>
+    <div class="nav-links">
+      <a href="#era">The era</a>
+      <a href="#layer">The layer</a>
+      <a href="#modes">Modes</a>
+      <a href="#horizon">Horizon</a>
+      <a class="btn btn-glow nav-cta" href="#enter">Enter free</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="hud-line hud">Trust infrastructure · v1 · Live</div>
+      <h1>
+        <span class="ln">AI can fake anyone.</span>
+        <span class="ln"><span class="grad">We verify the human.</span></span>
+      </h1>
+      <p class="lead">Resumes are generated. Interviews are deepfaked. And your panel pays for every synthetic candidate that slips through. SimpleHire computes trust before you submit — identity, skill, work authorization — so panel time is spent deciding, never filtering.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-glow" href="#enter">Enter the trust layer</a>
+        <a class="btn btn-line" href="#layer">See the intelligence ↓</a>
+      </div>
+      <div class="hero-tags">
+        <span class="tagchip">No procurement</span>
+        <span class="tagchip">Team-budget approval</span>
+        <span class="tagchip">First screens free</span>
+      </div>
+    </div>
+
+    <!-- signature: the identity core -->
+    <div class="core-wrap">
+      <div class="core" aria-label="Live identity verification scan">
+        <div class="ring"><span class="node"></span></div>
+        <div class="ring r2"></div>
+        <div class="ring r3"><span class="node"></span></div>
+        <div class="core-center">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#E9EEFB" stroke-width="1.2" aria-hidden="true">
+            <circle cx="12" cy="8.2" r="3.4"/>
+            <path d="M5.5 19.5c1.2-3.6 3.7-5.4 6.5-5.4s5.3 1.8 6.5 5.4"/>
+          </svg>
+          <div class="scanline"></div>
+        </div>
+        <div class="readout ro1"><span class="lab">IDENTITY</span><span class="ok" data-type>DUAL-ENGINE MATCH ✓</span></div>
+        <div class="readout ro2"><span class="lab">WORK AUTH</span><span class="ok" data-type>CLEARED · 14-TYPE ✓</span></div>
+        <div class="readout ro3"><span class="lab">CODE EXEC</span><span class="ok" data-type>12/14 TESTS PASS ✓</span></div>
+        <div class="readout ro4"><span class="lab">PROCTOR</span><span class="ok" data-type>SESSION CLEAN ✓</span></div>
+        <div class="trust">
+          <div class="tv"><span id="score">0.0</span></div>
+          <div class="tl">Trust computed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ FLUX ============ -->
+<div class="flux" aria-hidden="true">
+  <div class="flux-track">
+    <span>Verified human<i>◦</i></span><span>Trust computed<i>◦</i></span><span>Identity resolved<i>◦</i></span><span>Skill executed<i>◦</i></span><span>Authorization cleared<i>◦</i></span><span>Signal portable<i>◦</i></span>
+    <span>Verified human<i>◦</i></span><span>Trust computed<i>◦</i></span><span>Identity resolved<i>◦</i></span><span>Skill executed<i>◦</i></span><span>Authorization cleared<i>◦</i></span><span>Signal portable<i>◦</i></span>
+  </div>
+</div>
+
+<!-- ============ THE ERA ============ -->
+<section id="era">
+  <div class="wrap">
+    <div class="rv">
+      <span class="sec-tag">Signal lost · The AI flood</span>
+      <h2 style="margin-top:18px">Hiring's inputs are now <span class="grad">synthetic.</span></h2>
+      <p class="sub">The signals recruiting was built on — the resume, the phone screen, the gut feel — were designed for a world where humans wrote their own claims. That world is gone.</p>
+    </div>
+    <div class="era">
+      <div class="glass rv d1" style="padding:30px">
+        <span class="sig">Signal · degraded</span>
+        <h3>The resume is generated</h3>
+        <p>AI writes the claims, optimizes the keywords, and inflates the skills. What's on paper no longer predicts who shows up.</p>
+      </div>
+      <div class="glass rv d2" style="padding:30px">
+        <span class="sig">Signal · compromised</span>
+        <h3>The interview is impersonated</h3>
+        <p>Proxy interviewing and deepfaked sessions are endemic in contract staffing. The person you assessed may not be the person who arrives.</p>
+      </div>
+      <div class="glass rv d3" style="padding:30px">
+        <span class="sig">Reputation · at stake</span>
+        <h3>The client measures your signal</h3>
+        <p>Submission-to-interview ratio is how vendors are ranked. Every synthetic candidate that reaches the panel degrades yours — and the record decides who keeps the account.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE ECONOMICS ============ -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="rv">
+      <span class="sec-tag">The economics of trust</span>
+      <h2 style="margin-top:18px">One panel round vs. <span class="grad">one computed screen.</span></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:44px" class="econ-grid">
+      <div class="glass rv d1" style="padding:30px">
+        <div class="hud" style="color:#F87171">Unscreened submission</div>
+        <div style="font-family:var(--disp);font-weight:800;font-size:28px;margin-top:12px">3–5 panel hours</div>
+        <p style="font-size:14.5px;color:var(--dim);margin-top:10px">Senior engineers discovering what a screen would have caught in 20 minutes — plus a miss recorded against your signal.</p>
+      </div>
+      <div class="holo rv d2" style="padding:30px">
+        <div class="hud">Computed pre-screen</div>
+        <div style="font-family:var(--disp);font-weight:800;font-size:28px;margin-top:12px">$5 · 20 minutes</div>
+        <p style="font-size:14.5px;color:var(--dim);margin-top:10px">The candidate's time, not your panel's. Identity, authorization, and executed skill — proven before the submission goes out.</p>
+      </div>
+    </div>
+    <div class="beam-note rv" style="margin-top:24px"><b>Your numbers will vary — the ratio won't.</b> One filtered no-go funds the next hundred screens, and screened submissions protect the ratio clients rank you on.</div>
+    <style>@media(max-width:760px){.econ-grid{grid-template-columns:1fr!important}}</style>
+  </div>
+</section>
+
+<!-- ============ THE LAYER ============ -->
+<section id="layer" style="padding-top:30px">
+  <div class="wrap">
+    <div class="rv">
+      <span class="sec-tag">The intelligence layer · Live now</span>
+      <h2 style="margin-top:18px">Three engines. <span class="grad">One trust signal.</span></h2>
+      <p class="sub">Every candidate passes through one computed pipeline. The output isn't an opinion — it's evidence, fused into a portable verified signal.</p>
+    </div>
+    <div class="engines">
+      <div class="holo engine rv d1">
+        <span class="eid">Engine 01</span>
+        <h3>Interview Intelligence<span>Conversational · role-adaptive</span></h3>
+        <p>A voice agent that reads the role and the resume, asks what matters, and pursues weak answers with adaptive follow-ups — scored turn by turn.</p>
+        <ul>
+          <li>ROLE-ADAPTED VOICE SESSION</li>
+          <li>ADAPTIVE FOLLOW-UPS</li>
+          <li>KNOWLEDGE MCQ</li>
+        </ul>
+      </div>
+      <div class="holo engine rv d2">
+        <span class="eid">Engine 02</span>
+        <h3>Execution Intelligence<span>Code that actually runs</span></h3>
+        <p>No model guessing whether the code works. Submissions execute against real test cases in 15 languages — the report shows exactly what passed.</p>
+        <ul>
+          <li>LIVE CODE EXECUTION</li>
+          <li>15 LANGUAGES</li>
+          <li>PASS/FAIL PER TEST</li>
+        </ul>
+      </div>
+      <div class="holo engine rv d3">
+        <span class="eid">Engine 03</span>
+        <h3>Identity Intelligence<span>The human, confirmed</span></h3>
+        <p>Dual-engine document verification, biometric face match against the live session, and US work-authorization across 14 visa status types.</p>
+        <ul>
+          <li>DUAL-ENGINE ID CHECK</li>
+          <li>BIOMETRIC FACE MATCH</li>
+          <li>14-TYPE WORK AUTH</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MODES ============ -->
+<section id="modes" style="padding-top:30px">
+  <div class="wrap">
+    <div class="rv">
+      <span class="sec-tag">Engagement modes · Phase 1</span>
+      <h2 style="margin-top:18px">Choose the depth. <span class="grad">Per role.</span></h2>
+    </div>
+    <div class="modes">
+      <div class="glass mode rv d1">
+        <span class="freechip">Start free</span>
+        <span class="mtag">Mode 01</span>
+        <h3>Basic</h3>
+        <span class="mspec">5 QUESTIONS · 15 MIN</span>
+        <p>The fast filter. Confirms fundamentals and communication before anyone reads a resume twice.</p>
+        <ul>
+          <li>Role-adapted voice interview</li>
+          <li>Knowledge MCQs</li>
+          <li>Browser proctoring included</li>
+          <li>Instant screen report</li>
+        </ul>
+        <div class="mfee"><b>Free</b><span>to start · capped trial</span></div>
+      </div>
+      <div class="holo mode rv d2">
+        <span class="mtag" style="color:var(--cyan)">Mode 02 · Standard</span>
+        <h3>Adaptive</h3>
+        <span class="mspec">FOLLOW-UPS · 20 MIN</span>
+        <p>The interview digs where answers are thin. Up to two AI follow-ups per question, scored turn by turn.</p>
+        <ul>
+          <li>Everything in Basic</li>
+          <li>Adaptive follow-up questioning</li>
+          <li>Per-answer AI assessment</li>
+          <li>Coding with live execution</li>
+        </ul>
+        <div class="mfee"><b>$5</b><span>per interview · prepaid packs</span></div>
+      </div>
+      <div class="glass mode rv d3">
+        <span class="mtag">Mode 03</span>
+        <h3>Advanced</h3>
+        <span class="mspec">DEEP-DIVE · 30 MIN</span>
+        <p>For roles you can't afford to get wrong. Deeper questioning, harder follow-ups, fuller evidence.</p>
+        <ul>
+          <li>Everything in Adaptive</li>
+          <li>Three follow-ups per question</li>
+          <li>Deep-dive on weak areas</li>
+          <li>Extended coding evaluation</li>
+        </ul>
+        <div class="mfee"><b>$12–18</b><span>per interview</span></div>
+      </div>
+    </div>
+    <div class="beam-note rv"><b>The proctoring field covers every mode — including free.</b> Tab switching, copy-paste, and focus loss are monitored on every screen, so even a free result is a result you can trust.</div>
+  </div>
+</section>
+
+<!-- ============ SEQUENCE ============ -->
+<section style="padding-top:30px">
+  <div class="wrap">
+    <div class="rv" style="text-align:center">
+      <span class="sec-tag" style="justify-content:center">Protocol</span>
+      <h2 style="margin-top:18px">Invite → Compute → <span class="grad">Decide.</span></h2>
+    </div>
+    <div class="seq rv d1">
+      <div class="sq">
+        <div class="dotn">01</div>
+        <h3>Invite the candidate</h3>
+        <p>Paste the requirement, send a link. The interview configures itself to the role and the resume.</p>
+      </div>
+      <div class="sq">
+        <div class="dotn">02</div>
+        <h3>The layer computes</h3>
+        <p>Voice, code execution, identity, work auth, and proctoring run in one 15–30 minute session.</p>
+      </div>
+      <div class="sq">
+        <div class="dotn">03</div>
+        <h3>You decide in minutes</h3>
+        <p>One trust signal — scores, evidence, verification status. Shortlist, hold, or pass before panel time is spent.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING LINE ============ -->
+<section style="padding-top:10px">
+  <div class="wrap rv">
+    <span class="sec-tag">Access economics</span>
+    <h2 style="margin-top:18px">Priced for a team-lead's <span class="grad">yes.</span></h2>
+    <p class="sub">Free to prove it on real candidates. $5 per pre-screen after — prepaid credit packs (50 screens for $250): one invoice, not fifty charges. Advanced $12–18. No platform fee. No annual contract.</p>
+    <div class="hero-ctas" style="margin-top:32px;opacity:1;animation:none">
+      <a class="btn btn-glow" href="#enter">Get free screens</a>
+      <a class="btn btn-line" href="mailto:hello@simplehire.ai">Ask about credit packs</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HORIZON ============ -->
+<section id="horizon" style="padding-top:30px">
+  <div class="wrap">
+    <div class="rv">
+      <span class="sec-tag" style="color:var(--violet)">Horizon · Phase 2</span>
+      <h2 style="margin-top:18px">Where the layer <span class="grad">expands.</span></h2>
+      <p class="sub">Phase 1 verifies the human. Phase 2 makes verification ambient — embedded in your stack, compounding in a reusable verified network.</p>
+    </div>
+    <div class="horizon">
+      <div class="hz rv d1">
+        <span class="htag">Approaching</span>
+        <h3>Forensic proctoring suite</h3>
+        <p>Three further integrity levels — video analysis, desktop monitoring, second-device proctoring — for screens where the stakes demand forensic confidence.</p>
+      </div>
+      <div class="hz rv d2">
+        <span class="htag">Approaching</span>
+        <h3>Ambient ATS integration</h3>
+        <p>Invite, screen, and read trust signals without leaving your ATS. Bullhorn first, then the rest of your stack.</p>
+      </div>
+      <div class="hz rv d3">
+        <span class="htag">Approaching</span>
+        <h3>The verified network</h3>
+        <p>Search humans already verified. When the signal exists, skip the screen entirely — every verification makes the next one unnecessary.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PORTAL ============ -->
+<section class="portal" id="enter">
+  <div class="wrap rv">
+    <h2>Your next submission, <span class="grad">computed.</span></h2>
+    <p>Screen before you submit · panel time for decisions only · free to start</p>
+    <br>
+    <a class="btn btn-glow" href="mailto:hello@simplehire.ai?subject=Free%20screening%20access">Enter the trust layer — free</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <a class="logo" href="#"><span class="orb"></span>SimpleHire</a>
+    <div class="fine">
+      SimpleHire Technologies Inc · San Francisco, CA<br>
+      NVIDIA Inception Member · Humans own their verified signals
+    </div>
+  </div>
+</footer>
+
+<script>
+// nav
+const nav=document.getElementById('nav');
+addEventListener('scroll',()=>nav.classList.toggle('on',scrollY>24),{passive:true});
+// reveals
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.13});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+// trust score count-up
+const motionOK=!matchMedia('(prefers-reduced-motion: reduce)').matches;
+const scoreEl=document.getElementById('score');
+if(scoreEl){
+  const target=98.4, dur=motionOK?2200:0, t0=performance.now()+900;
+  function tick(t){
+    const p=Math.min(1,Math.max(0,(t-t0)/Math.max(dur,1)));
+    const eased=1-Math.pow(1-p,3);
+    scoreEl.textContent=(target*eased).toFixed(1);
+    if(p<1)requestAnimationFrame(tick);else scoreEl.textContent=target.toFixed(1);
+  }
+  requestAnimationFrame(tick);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SimpleHire — Submit proof, not resumes</title>
+<meta name="description" content="A verified pre-screen before every submission. Watch a screen happen: voice interview, real code execution, identity and work-authorization — assembled into proof your panel can trust.">
+<meta name="theme-color" content="#121212">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#121212;
+  --bg-2:#1A1A1A;
+  --txt:#FFFFFF;
+  --dim:#9CA3AF;
+  --faint:rgba(255,255,255,.08);
+  --blue:#3992FF;
+  --red:#F44250;
+  --yellow:#FECC1B;
+  --green:#6BD968;
+  --aqua:#4FD8C9;
+  --pink:#D83BD2;
+  --sans:'Inter',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--txt);font-size:17px;line-height:1.6;overflow-x:hidden}
+::selection{background:var(--blue);color:#fff}
+a{color:inherit}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-weight:800;letter-spacing:-.03em;line-height:1.02}
+h2{font-size:clamp(34px,5vw,56px)}
+.dim{color:var(--dim)}
+.mono{font-family:var(--mono)}
+
+.btn{display:inline-block;font-weight:700;font-size:16px;padding:14px 28px;border-radius:12px;text-decoration:none;transition:transform .15s ease,background .15s ease}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:#2A7FE8}
+.btn-dark{background:var(--bg-2);color:#fff;border:1px solid var(--faint)}
+.btn-dark:hover{border-color:rgba(255,255,255,.3)}
+
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:50;background:rgba(18,18,18,.85);backdrop-filter:blur(12px)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-weight:900;font-size:19px;letter-spacing:-.02em;text-decoration:none;display:flex;align-items:center;gap:9px}
+.logo i{font-style:normal;width:24px;height:24px;border-radius:7px;background:var(--blue);display:grid;place-items:center;font-size:13px;font-weight:900}
+.nav-links{display:flex;gap:26px;align-items:center;font-size:14.5px;font-weight:600;color:var(--dim)}
+.nav-links a{text-decoration:none}
+.nav-links a:hover{color:#fff}
+@media(max-width:720px){.nav-links a:not(.btn){display:none}}
+.nav-links .btn{font-size:13.5px;padding:9px 18px}
+
+/* ---------- hero ---------- */
+.hero{padding:110px 0 90px;text-align:center}
+.hero h1{font-size:clamp(44px,8vw,92px);font-weight:900}
+.hero h1 em{font-style:normal;color:var(--blue)}
+.hero .tag{font-size:clamp(20px,2.6vw,27px);font-weight:700;letter-spacing:-.02em;color:#fff;margin-top:22px;line-height:1.3}
+.hero p.lead{max-width:640px;margin:22px auto 0;color:var(--dim);font-size:18px}
+.hero-ctas{margin-top:36px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.hero .fine{margin-top:18px;font-family:var(--mono);font-size:12.5px;color:var(--dim)}
+.hero .fine b{color:var(--green);font-weight:500}
+
+/* ---------- scroll demo ---------- */
+.demo-sec{padding:80px 0 40px}
+.demo-head{max-width:700px;margin:0 auto 10px;text-align:center}
+.demo-head h2 em{font-style:normal;color:var(--yellow)}
+.demo-head p{color:var(--dim);margin-top:16px;font-size:17.5px}
+.scrolly{display:grid;grid-template-columns:1fr 1.1fr;gap:48px;align-items:start;margin-top:40px}
+@media(max-width:880px){.scrolly{grid-template-columns:1fr}}
+.steps{display:flex;flex-direction:column}
+.step{min-height:78vh;display:flex;align-items:center;opacity:.25;transition:opacity .35s ease}
+.step.on{opacity:1}
+@media(max-width:880px){.step{min-height:60vh}}
+.step-in{max-width:420px}
+.step .k{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.step h3{font-size:clamp(24px,3vw,32px);margin-top:12px}
+.step p{color:var(--dim);margin-top:12px;font-size:16.5px}
+.sticky-col{position:sticky;top:90px;height:calc(100vh - 120px);display:flex;align-items:center}
+@media(max-width:880px){.sticky-col{position:sticky;top:70px;height:auto;z-index:5;background:rgba(18,18,18,.96);backdrop-filter:blur(8px);padding:14px 0;order:-1}}
+
+/* the report card */
+.report{width:100%;max-width:480px;margin:0 auto;background:var(--bg-2);border:1px solid var(--faint);border-radius:18px;padding:26px 26px 22px;box-shadow:0 40px 80px -40px rgba(0,0,0,.8)}
+.rep-head{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:16px;border-bottom:1px solid var(--faint)}
+.rep-head .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.rep-head .n{font-weight:800;font-size:19px;letter-spacing:-.02em;margin-top:4px;opacity:.25;transition:opacity .4s ease}
+.report.s1 .rep-head .n,.report.s2 .rep-head .n,.report.s3 .rep-head .n,.report.s4 .rep-head .n,.report.s5 .rep-head .n{opacity:1}
+.rep-head .req{font-family:var(--mono);font-size:11px;color:var(--dim);text-align:right;line-height:1.7}
+.rows{margin-top:16px;display:flex;flex-direction:column;gap:11px}
+.row{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;transition:opacity .4s ease}
+.row .k{color:var(--dim)}
+.row .dots{flex:1;border-bottom:1px dotted rgba(255,255,255,.15);margin:0 12px;transform:translateY(3px)}
+.row .v{font-weight:700;color:var(--dim);transition:color .35s ease}
+.row[data-state="queued"]{opacity:.35}
+.row[data-state="queued"] .v::after{content:"queued"}
+.row[data-state="running"]{opacity:1}
+.row[data-state="running"] .v{color:var(--yellow)}
+.row[data-state="running"] .v::after{content:"running…"}
+.row[data-state="done"]{opacity:1}
+.row[data-state="done"] .v{color:#fff}
+.row[data-state="pass"]{opacity:1}
+.row[data-state="pass"] .v{color:var(--green)}
+.rep-foot{margin-top:18px;padding-top:16px;border-top:1px solid var(--faint);display:flex;justify-content:space-between;align-items:center;min-height:54px}
+.rep-foot .id{font-family:var(--mono);font-size:10.5px;color:var(--dim);line-height:1.8}
+.verdict{font-weight:900;font-size:15px;letter-spacing:.06em;color:var(--green);border:2px solid var(--green);border-radius:10px;padding:7px 16px;opacity:0;transform:scale(.8);transition:opacity .35s ease,transform .35s ease}
+.report.s5 .verdict{opacity:1;transform:scale(1)}
+.attach{margin-top:14px;background:rgba(57,146,255,.12);border:1px solid rgba(57,146,255,.4);color:var(--blue);border-radius:10px;padding:11px 16px;font-size:13.5px;font-weight:700;text-align:center;opacity:0;transition:opacity .4s ease}
+.report.s5 .attach{opacity:1}
+
+/* ---------- comparison ---------- */
+.compare{padding:120px 0 60px}
+.compare h2 em{font-style:normal;color:var(--red)}
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px}
+@media(max-width:840px){.cmp-grid{grid-template-columns:1fr}}
+.cmp{background:var(--bg-2);border:1px solid var(--faint);border-radius:18px;padding:28px}
+.cmp .lbl{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+.cmp.bad .lbl{color:var(--red)}
+.cmp.good .lbl{color:var(--green)}
+.bars{margin-top:22px;display:flex;flex-direction:column;gap:12px}
+.bar{display:grid;grid-template-columns:130px 1fr;align-items:center;gap:12px;font-family:var(--mono);font-size:12px}
+.bar .bl{color:var(--dim)}
+.bar .bt{height:26px;border-radius:6px;display:flex;align-items:center;padding:0 10px;font-weight:700;font-size:11px;width:0%;overflow:hidden;white-space:nowrap;transition:width .8s cubic-bezier(.22,1,.36,1)}
+.cmp.bad .bt{background:rgba(244,66,80,.18);color:#FF8A93;border:1px solid rgba(244,66,80,.4)}
+.cmp.good .bt{background:rgba(107,217,104,.14);color:var(--green);border:1px solid rgba(107,217,104,.4)}
+.cmp .sum{margin-top:20px;padding-top:16px;border-top:1px solid var(--faint);font-size:15px;color:var(--dim)}
+.cmp .sum b{color:#fff}
+.in .bt{width:var(--w)}
+
+/* ---------- math ---------- */
+.math{padding:80px 0}
+.math h2 em{font-style:normal;color:var(--yellow)}
+.math-cards{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:44px}
+@media(max-width:840px){.math-cards{grid-template-columns:1fr}}
+.mcard{background:var(--bg-2);border:1px solid var(--faint);border-radius:18px;padding:30px}
+.mcard.hot{border-color:rgba(57,146,255,.5)}
+.mcard .ml{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:700}
+.mcard.hot .ml{color:var(--blue)}
+.mcard .mv{font-size:34px;font-weight:900;letter-spacing:-.03em;margin-top:10px}
+.mcard p{color:var(--dim);margin-top:12px;font-size:15.5px}
+.ratio{margin-top:24px;background:var(--bg-2);border:1px solid var(--faint);border-left:4px solid var(--yellow);border-radius:12px;padding:20px 24px;font-size:16px;color:var(--dim)}
+.ratio b{color:#fff}
+
+/* ---------- tiers ---------- */
+.tiers-sec{padding:80px 0}
+.tiers-sec h2 em{font-style:normal;color:var(--aqua)}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:46px}
+@media(max-width:900px){.tiers{grid-template-columns:1fr}}
+.tier{background:var(--bg-2);border:1px solid var(--faint);border-radius:18px;padding:28px;display:flex;flex-direction:column}
+.tier.mid{border-color:rgba(79,216,201,.55)}
+.tier .lv{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);font-weight:700}
+.tier h3{font-size:26px;margin-top:10px}
+.tier .sp{font-family:var(--mono);font-size:12px;color:var(--aqua);margin-top:6px;font-weight:700}
+.tier p{font-size:15px;color:var(--dim);margin-top:12px}
+.tier ul{list-style:none;margin-top:18px;display:flex;flex-direction:column;gap:9px;flex:1}
+.tier li{font-size:14.5px;padding-left:24px;position:relative}
+.tier li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:700}
+.tier .pr{margin-top:22px;padding-top:18px;border-top:1px solid var(--faint)}
+.tier .pr b{font-size:27px;font-weight:900;letter-spacing:-.02em}
+.tier .pr span{font-size:13.5px;color:var(--dim)}
+.freechip{align-self:flex-start;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:#121212;background:var(--green);border-radius:99px;padding:4px 12px;font-weight:700;text-transform:uppercase;margin-bottom:12px}
+.proct{margin-top:26px;background:var(--bg-2);border:1px solid var(--faint);border-left:4px solid var(--aqua);border-radius:12px;padding:18px 24px;font-size:15.5px;color:var(--dim)}
+.proct b{color:#fff}
+
+/* ---------- verified list ---------- */
+.verify{padding:80px 0}
+.verify h2 em{font-style:normal;color:var(--green)}
+.vlist{margin-top:44px;border:1px solid var(--faint);border-radius:18px;overflow:hidden}
+.vrow{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:20px 26px;border-bottom:1px solid var(--faint);background:var(--bg-2)}
+.vrow:last-child{border-bottom:none}
+.vrow .vn{font-weight:700;font-size:16.5px;display:flex;align-items:center;gap:12px}
+.vrow .vn::before{content:"✓";color:var(--green);font-weight:900}
+.vrow .vd{font-family:var(--mono);font-size:12px;color:var(--dim);text-align:right}
+.vnote{margin-top:24px;color:var(--dim);font-size:16px;max-width:680px}
+.vnote b{color:#fff}
+
+/* ---------- phase 2 ---------- */
+.next{padding:80px 0}
+.next h2 em{font-style:normal;color:var(--pink)}
+.next-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
+@media(max-width:900px){.next-grid{grid-template-columns:1fr}}
+.ncard{background:var(--bg-2);border:1px dashed rgba(255,255,255,.18);border-radius:18px;padding:28px}
+.ncard .nt{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--pink);text-transform:uppercase;font-weight:700}
+.ncard h3{font-size:20px;margin-top:14px}
+.ncard p{font-size:15px;color:var(--dim);margin-top:10px}
+
+/* ---------- final ---------- */
+.final{padding:120px 0 140px;text-align:center}
+.final h2{font-size:clamp(38px,6.4vw,72px)}
+.final h2 em{font-style:normal;color:var(--blue)}
+.final p{color:var(--dim);margin-top:18px;font-size:17.5px}
+.final .btn{margin-top:34px;font-size:18px;padding:17px 38px}
+
+footer{border-top:1px solid var(--faint);padding:40px 0 56px}
+.foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center}
+.foot .fine{font-family:var(--mono);font-size:11.5px;color:var(--dim);line-height:2;text-align:right}
+@media(max-width:640px){.foot .fine{text-align:left}}
+
+/* reveal — single subtle fade, scroll-bound only */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.rv.in{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:.01ms!important;animation:none!important}
+  .rv,.step{opacity:1;transform:none}
+  .in .bt{width:var(--w)}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <a class="logo" href="#"><i>S</i>SimpleHire</a>
+    <div class="nav-links">
+      <a href="#company">Company</a>
+      <a href="#demo">How it works</a>
+      <a href="#math">The math</a>
+      <a href="#tiers">Pricing</a>
+      <a href="#next">What's next</a>
+      <a class="btn btn-blue" href="#go">Start free</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <h1>Submit <em>proof,</em><br>not resumes.</h1>
+    <p class="tag">Every candidate you submit carries your name.<br>Make sure they're worth it — before the panel finds out.</p>
+    <p class="lead">SimpleHire runs a verified pre-screen on every candidate — voice interview, code that actually executes, identity and work-authorization checks — in 20 minutes, before the submission goes out.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-blue" href="#go">Screen your next candidate free</a>
+      <a class="btn btn-dark" href="#demo">Watch a screen happen ↓</a>
+    </div>
+    <p class="fine">No procurement · team-budget approval · <b>first screens free</b></p>
+  </div>
+</header>
+
+<!-- ============ THE TRACK ============ -->
+<style>
+.trackwrap{height:300vh;position:relative}
+.trackstage{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+.track-head{text-align:center;padding:84px 24px 0;position:relative;z-index:3}
+.track-head h2{font-size:clamp(28px,4.4vw,46px)}
+.track-head h2 em{font-style:normal;color:var(--blue)}
+.track-status{margin-top:12px;font-family:var(--mono);font-size:13px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
+.track-status b{color:var(--yellow);font-weight:700}
+.track-status.fin b{color:var(--green)}
+.track-canvas{flex:1;position:relative;max-width:860px;width:100%;margin:0 auto;min-height:0}
+.track-canvas svg{position:absolute;inset:0;width:100%;height:100%}
+.gate{position:absolute;transform:translate(-50%,-50%);font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--dim);background:var(--bg-2);border:1.5px solid rgba(255,255,255,.18);border-radius:99px;padding:6px 13px;white-space:nowrap;transition:color .3s ease,border-color .3s ease;z-index:2}
+.gate.passed{color:var(--green);border-color:var(--green)}
+.gate.finish{font-weight:800}
+.gate.finish.passed{background:rgba(107,217,104,.12)}
+.traveler{position:absolute;transform:translate(-50%,-50%);z-index:3;display:flex;align-items:center;gap:8px;background:#1A1A1A;border:1.5px solid var(--blue);border-radius:99px;padding:7px 14px 7px 9px;font-size:12.5px;font-weight:700;box-shadow:0 8px 30px -8px rgba(57,146,255,.6);will-change:transform}
+.traveler .av{width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--aqua));display:grid;place-items:center;font-size:10px;font-weight:900}
+@media(max-width:640px){.track-head{padding-top:76px}.gate{font-size:9.5px;padding:5px 10px}.traveler{font-size:11px;padding:6px 11px 6px 7px}}
+</style>
+<section class="trackwrap" id="track" aria-label="A candidate's journey through the verification checkpoints">
+  <div class="trackstage">
+    <div class="track-head">
+      <h2>From stranger to <em>verified.</em></h2>
+      <div class="track-status" id="tstatus">Candidate status — <b>invited</b></div>
+    </div>
+    <div class="track-canvas" id="tcanvas">
+      <svg viewBox="0 0 800 980" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <!-- road base -->
+        <path id="road" d="M 110 70 C 480 30, 720 140, 660 290 C 610 420, 170 380, 130 540 C 95 690, 560 660, 660 800 C 720 885, 520 940, 330 920" fill="none" stroke="#242424" stroke-width="34" stroke-linecap="round"/>
+        <!-- progress glow -->
+        <path id="prog" d="M 110 70 C 480 30, 720 140, 660 290 C 610 420, 170 380, 130 540 C 95 690, 560 660, 660 800 C 720 885, 520 940, 330 920" fill="none" stroke="#3992FF" stroke-width="34" stroke-linecap="round" opacity=".3"/>
+        <!-- center line -->
+        <path d="M 110 70 C 480 30, 720 140, 660 290 C 610 420, 170 380, 130 540 C 95 690, 560 660, 660 800 C 720 885, 520 940, 330 920" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2" stroke-dasharray="12 12"/>
+      </svg>
+      <div class="gate" data-at="0.16" data-label="INTERVIEW">INTERVIEW</div>
+      <div class="gate" data-at="0.40" data-label="CODE RUNS">CODE RUNS</div>
+      <div class="gate" data-at="0.60" data-label="IDENTITY">IDENTITY</div>
+      <div class="gate" data-at="0.78" data-label="WORK AUTH">WORK AUTH</div>
+      <div class="gate finish" data-at="0.985" data-label="VERIFIED">🏁 VERIFIED</div>
+      <div class="traveler" id="traveler"><span class="av">A</span>A. Sharma</div>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  const wrap=document.getElementById('track');
+  const road=document.getElementById('prog');
+  const trav=document.getElementById('traveler');
+  const status=document.getElementById('tstatus');
+  const canvas=document.getElementById('tcanvas');
+  const gates=[...wrap.querySelectorAll('.gate')];
+  const L=road.getTotalLength();
+  road.style.strokeDasharray=L; road.style.strokeDashoffset=L;
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const phases=[[0,'invited'],[0.16,'interviewing…'],[0.40,'code executing…'],[0.60,'verifying identity…'],[0.78,'confirming work auth…'],[0.985,'VERIFIED ✓']];
+
+  function layout(){
+    const vb={w:800,h:980};
+    const r=canvas.getBoundingClientRect();
+    const s=Math.min(r.width/vb.w,r.height/vb.h);
+    const ox=(r.width-vb.w*s)/2, oy=(r.height-vb.h*s)/2;
+    return {s,ox,oy};
+  }
+  function place(el,frac,m){
+    const p=road.getPointAtLength(frac*L);
+    el.style.left=(m.ox+p.x*m.s)+'px';
+    el.style.top=(m.oy+p.y*m.s)+'px';
+    return p;
+  }
+  function render(prog){
+    const m=layout();
+    road.style.strokeDashoffset=L*(1-prog);
+    gates.forEach(g=>{
+      place(g,parseFloat(g.dataset.at),m);
+      g.classList.toggle('passed',prog>=parseFloat(g.dataset.at));
+    });
+    const p=place(trav,prog,m);
+    const p2=road.getPointAtLength(Math.min(L,(prog+0.012)*L));
+    const ang=Math.atan2(p2.y-p.y,p2.x-p.x)*180/Math.PI;
+    const tilt=Math.max(-14,Math.min(14,ang*0.18));
+    trav.style.transform='translate(-50%,-50%) rotate('+tilt+'deg)';
+    let lbl=phases[0][1];
+    for(const [f,t] of phases){ if(prog>=f) lbl=t; }
+    status.innerHTML='Candidate status — <b>'+lbl+'</b>';
+    status.classList.toggle('fin',prog>=0.985);
+  }
+  function progress(){
+    const rect=wrap.getBoundingClientRect();
+    const total=rect.height-innerHeight;
+    return Math.max(0,Math.min(1,-rect.top/total));
+  }
+  if(reduced){ render(1); }
+  else{
+    let tick=false;
+    function onScroll(){ if(!tick){ tick=true; requestAnimationFrame(()=>{ render(progress()); tick=false; }); } }
+    addEventListener('scroll',onScroll,{passive:true});
+    addEventListener('resize',()=>render(progress()),{passive:true});
+    render(progress());
+  }
+})();
+</script>
+
+<!-- ============ SCROLL DEMO ============ -->
+<section class="demo-sec" id="demo">
+  <div class="wrap">
+    <div class="demo-head rv">
+      <h2>Watch a screen <em>happen.</em></h2>
+      <p>Keep scrolling. The report builds itself — the same way it does while your candidate is still on the call.</p>
+    </div>
+
+    <div class="scrolly">
+      <!-- sticky report -->
+      <div class="sticky-col">
+        <div class="report" id="report" aria-label="Screen report assembling as you scroll">
+          <div class="rep-head">
+            <div>
+              <div class="t">Screen report</div>
+              <div class="n">A. Sharma — Java Backend</div>
+            </div>
+            <div class="req">REQ-2031<br>JUN 2026</div>
+          </div>
+          <div class="rows">
+            <div class="row" id="r-voice"><span class="k">Voice interview</span><span class="dots"></span><span class="v"></span></div>
+            <div class="row" id="r-code"><span class="k">Coding — live execution</span><span class="dots"></span><span class="v"></span></div>
+            <div class="row" id="r-mcq"><span class="k">Knowledge MCQ</span><span class="dots"></span><span class="v"></span></div>
+            <div class="row" id="r-proc"><span class="k">Browser proctoring</span><span class="dots"></span><span class="v"></span></div>
+            <div class="row" id="r-id"><span class="k">Identity check</span><span class="dots"></span><span class="v"></span></div>
+            <div class="row" id="r-auth"><span class="k">Work authorization</span><span class="dots"></span><span class="v"></span></div>
+          </div>
+          <div class="rep-foot">
+            <div class="id">CERT SH-7F42-K1<br>VERIFY AT SIMPLEHIRE.AI/VERIFY</div>
+            <div class="verdict">VERIFIED</div>
+          </div>
+          <div class="attach">→ Attach report to your submission</div>
+        </div>
+      </div>
+
+      <!-- steps -->
+      <div class="steps">
+        <div class="step" data-step="1">
+          <div class="step-in">
+            <span class="k" style="color:var(--blue)">Step 1 · Invite</span>
+            <h3>You paste the req. We invite the candidate.</h3>
+            <p>The interview configures itself to the role and the resume. No scheduling, no calendar tennis — the candidate takes it when they're ready, today.</p>
+          </div>
+        </div>
+        <div class="step" data-step="2">
+          <div class="step-in">
+            <span class="k" style="color:var(--yellow)">Step 2 · Interview</span>
+            <h3>The AI interviews them. Properly.</h3>
+            <p>A role-adapted voice conversation that digs where answers are thin — with follow-ups, scored turn by turn. Not a form. An interview.</p>
+          </div>
+        </div>
+        <div class="step" data-step="3">
+          <div class="step-in">
+            <span class="k" style="color:var(--aqua)">Step 3 · Code runs</span>
+            <h3>Their code actually executes.</h3>
+            <p>No model guessing whether it works. Submissions run against real test cases in 15 languages — the report shows exactly which tests passed.</p>
+          </div>
+        </div>
+        <div class="step" data-step="4">
+          <div class="step-in">
+            <span class="k" style="color:var(--green)">Step 4 · Verify the human</span>
+            <h3>Identity and work-auth, confirmed.</h3>
+            <p>Dual-engine ID verification, biometric face match against the live session, and US work-authorization across 14 visa status types. The person you screened is the person you submit.</p>
+          </div>
+        </div>
+        <div class="step" data-step="5">
+          <div class="step-in">
+            <span class="k" style="color:var(--green)">Step 5 · Done</span>
+            <h3>Twenty minutes. Zero panel hours.</h3>
+            <p>You get a verdict and the evidence behind it. Shortlist, hold, or pass — and when you submit, the report goes with the candidate. Proof attached beats a bare resume from the competing vendor.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMPARISON ============ -->
+<section class="compare">
+  <div class="wrap">
+    <div class="rv">
+      <h2>Say goodbye to <em>panel roulette.</em></h2>
+      <p class="dim" style="margin-top:16px;max-width:620px;font-size:17.5px">Without a pre-screen, your panel is the screening — and they find out the hard way. Here's the same candidate, both ways.</p>
+    </div>
+    <div class="cmp-grid">
+      <div class="cmp bad rv" id="cmpBad">
+        <span class="lbl">Without a pre-screen</span>
+        <div class="bars">
+          <div class="bar"><span class="bl">Submit resume</span><span class="bt" style="--w:30%">day 1</span></div>
+          <div class="bar"><span class="bl">Panel round 1</span><span class="bt" style="--w:55%">1 hr · 3 engineers</span></div>
+          <div class="bar"><span class="bl">Panel round 2</span><span class="bt" style="--w:75%">1 hr · 2 engineers</span></div>
+          <div class="bar"><span class="bl">Discovery</span><span class="bt" style="--w:100%">can't code · not authorized ✕</span></div>
+        </div>
+        <p class="sum"><b>3–5 senior hours burned.</b> A miss on your record. A client who remembers.</p>
+      </div>
+      <div class="cmp good rv" id="cmpGood">
+        <span class="lbl">With a pre-screen</span>
+        <div class="bars">
+          <div class="bar"><span class="bl">Pre-screen</span><span class="bt" style="--w:32%">20 min · $5</span></div>
+          <div class="bar"><span class="bl">Verdict</span><span class="bt" style="--w:46%">verified ✓</span></div>
+          <div class="bar"><span class="bl">Submit + report</span><span class="bt" style="--w:60%">proof attached</span></div>
+          <div class="bar"><span class="bl">Panel</span><span class="bt" style="--w:78%">decides — doesn't filter</span></div>
+        </div>
+        <p class="sum"><b>Zero wasted panel hours.</b> Your submission lands with evidence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MATH ============ -->
+<section class="math" id="math">
+  <div class="wrap">
+    <div class="rv">
+      <h2>Do the <em>math.</em></h2>
+    </div>
+    <div class="math-cards">
+      <div class="mcard rv">
+        <span class="ml">An unscreened submission</span>
+        <div class="mv">3–5 panel hours</div>
+        <p>Senior engineers pulled off their roadmap to discover what a screen would have caught in 20 minutes — plus a miss the client remembers against your name.</p>
+      </div>
+      <div class="mcard hot rv">
+        <span class="ml">A SimpleHire pre-screen</span>
+        <div class="mv">$5 · 20 minutes</div>
+        <p>The candidate's time, not your panel's. Identity, work authorization, and real skills proven before the submission goes out.</p>
+      </div>
+    </div>
+    <div class="ratio rv"><b>Your numbers will vary — the ratio won't.</b> One filtered no-go pays for the next hundred screens. And clients judge vendors on submission-to-interview ratio; screened submissions protect yours.</div>
+  </div>
+</section>
+
+<!-- ============ TIERS ============ -->
+<section class="tiers-sec" id="tiers">
+  <div class="wrap">
+    <div class="rv">
+      <h2>Three levels. <em>Pick per role.</em></h2>
+    </div>
+    <div class="tiers">
+      <div class="tier rv">
+        <span class="freechip">Start free</span>
+        <span class="lv">Level 1</span>
+        <h3>Basic</h3>
+        <span class="sp">5 QUESTIONS · 15 MIN</span>
+        <p>The fast filter. Confirms fundamentals and communication before anyone reads a resume twice.</p>
+        <ul>
+          <li>Role-adapted voice interview</li>
+          <li>Knowledge MCQs</li>
+          <li>Browser proctoring included</li>
+          <li>Instant screen report</li>
+        </ul>
+        <div class="pr"><b>Free</b> <span>to start · capped trial</span></div>
+      </div>
+      <div class="tier mid rv">
+        <span class="lv" style="color:var(--aqua)">Level 2 · Most chosen</span>
+        <h3>Adaptive</h3>
+        <span class="sp">FOLLOW-UPS · 20 MIN</span>
+        <p>The interview digs where answers are thin. Up to two AI follow-ups per question, scored turn by turn.</p>
+        <ul>
+          <li>Everything in Basic</li>
+          <li>Adaptive follow-up questioning</li>
+          <li>Per-answer AI assessment</li>
+          <li>Coding with live execution</li>
+        </ul>
+        <div class="pr"><b>$5</b> <span>per interview · prepaid packs</span></div>
+      </div>
+      <div class="tier rv">
+        <span class="lv">Level 3</span>
+        <h3>Advanced</h3>
+        <span class="sp">DEEP-DIVE · 30 MIN</span>
+        <p>For roles you can't afford to get wrong. Deeper questioning, harder follow-ups, fuller evidence.</p>
+        <ul>
+          <li>Everything in Adaptive</li>
+          <li>Three follow-ups per question</li>
+          <li>Deep-dive on weak areas</li>
+          <li>Extended coding evaluation</li>
+        </ul>
+        <div class="pr"><b>$12–18</b> <span>per interview</span></div>
+      </div>
+    </div>
+    <div class="proct rv"><b>Proctoring runs on every level — including free.</b> Tab switching, copy-paste, and focus loss are monitored on every screen, so even a free result is a result you can trust.</div>
+  </div>
+</section>
+
+<!-- ============ VERIFY ============ -->
+<section class="verify">
+  <div class="wrap">
+    <div class="rv">
+      <h2>We verify the person, <em>not just the answers.</em></h2>
+    </div>
+    <div class="vlist rv">
+      <div class="vrow"><span class="vn">Government ID</span><span class="vd">dual-engine cross-check</span></div>
+      <div class="vrow"><span class="vn">Face match</span><span class="vd">biometric · live session</span></div>
+      <div class="vrow"><span class="vn">Work authorization</span><span class="vd">14 visa status types</span></div>
+      <div class="vrow"><span class="vn">Code execution</span><span class="vd">real tests · 15 languages</span></div>
+      <div class="vrow"><span class="vn">Browser integrity</span><span class="vd">all tiers, incl. free</span></div>
+      <div class="vrow"><span class="vn">Result certificate</span><span class="vd">verifiable by ID, online</span></div>
+    </div>
+    <p class="vnote rv">And with the candidate's consent, a passed screen becomes a <b>portable verified profile they own</b> — which is why strong candidates actually complete our screens: the result works for them too.</p>
+  </div>
+</section>
+
+<!-- ============ NEXT ============ -->
+<section class="next" id="next">
+  <div class="wrap">
+    <div class="rv">
+      <h2>What's <em>next.</em></h2>
+      <p class="dim" style="margin-top:14px;font-size:17px">Phase 1 keeps bad candidates away from your panel. Phase 2 makes the whole pipeline yours.</p>
+    </div>
+    <div class="next-grid">
+      <div class="ncard rv">
+        <span class="nt">Coming</span>
+        <h3>Full proctoring suite</h3>
+        <p>Video analysis, desktop monitoring, and second-device proctoring — for screens where the stakes justify forensic confidence.</p>
+      </div>
+      <div class="ncard rv">
+        <span class="nt">Coming</span>
+        <h3>ATS integration</h3>
+        <p>Invite, screen, and read results without leaving your ATS. Bullhorn first, then the rest of your stack.</p>
+      </div>
+      <div class="ncard rv">
+        <span class="nt">Coming</span>
+        <h3>The verified pool</h3>
+        <p>Search candidates who are already SimpleHire-verified. When the credential exists, skip the screen entirely.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL ============ -->
+<section class="final" id="go">
+  <div class="wrap rv">
+    <h2>That's the whole pitch.<br><em>What are you waiting for?</em></h2>
+    <p>Screen the candidates on your desk today. Submit only the ones you've proven. Free to start.</p>
+    <a class="btn btn-blue" href="mailto:hello@simplehire.ai?subject=Free%20screening%20access">Go screen one →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <a class="logo" href="#"><i>S</i>SimpleHire</a>
+    <div class="fine">
+      SIMPLEHIRE TECHNOLOGIES INC · SAN FRANCISCO, CA<br>
+      NVIDIA INCEPTION MEMBER · CANDIDATES OWN THEIR VERIFIED RESULTS
+    </div>
+  </div>
+</footer>
+
+<script>
+// ---- scroll reveals (single fade, no loops) ----
+const io = new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.18});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+// ---- scroll-built report ----
+const report = document.getElementById('report');
+const rows = {
+  voice: document.getElementById('r-voice'),
+  code:  document.getElementById('r-code'),
+  mcq:   document.getElementById('r-mcq'),
+  proc:  document.getElementById('r-proc'),
+  id:    document.getElementById('r-id'),
+  auth:  document.getElementById('r-auth'),
+};
+function setRow(row, state, text){
+  row.dataset.state = state;
+  row.querySelector('.v').textContent = (state==='queued'||state==='running') ? '' : text;
+}
+function setStep(n){
+  report.className = 'report s'+n;
+  // step 1: invited — all queued
+  setRow(rows.voice, n>=2 ? 'done' : (n>=1?'running':'queued'), '8.4 / 10');
+  if(n===1) setRow(rows.voice,'running','');
+  if(n>=2) setRow(rows.voice,'done','8.4 / 10');
+  if(n<1) setRow(rows.voice,'queued','');
+  setRow(rows.code, n>=3?'done':(n===2?'running':'queued'), 'PASS · 12/14 tests');
+  setRow(rows.mcq,  n>=3?'done':'queued', '82%');
+  setRow(rows.proc, n>=3?'pass':'queued', 'CLEAN ✓');
+  setRow(rows.id,   n>=4?'pass':'queued', 'VERIFIED ✓');
+  setRow(rows.auth, n>=4?'pass':'queued', 'CONFIRMED ✓');
+}
+setStep(0);
+const steps = document.querySelectorAll('.step');
+const stepIO = new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      steps.forEach(s=>s.classList.remove('on'));
+      e.target.classList.add('on');
+      setStep(parseInt(e.target.dataset.step,10));
+    }
+  });
+},{rootMargin:'-42% 0px -42% 0px'});
+steps.forEach(s=>stepIO.observe(s));
+</script>
+<!-- ============ COMPANY VIEW ============ -->
+<style>
+.coview{position:fixed;inset:0;z-index:200;overflow:auto;background:var(--bg);color:var(--txt);padding:0 0 80px}
+.coview[hidden]{display:none}
+.co-bar{display:flex;justify-content:space-between;align-items:center;height:64px;border-bottom:1px solid var(--faint)}
+.co-back{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--dim);font-weight:700}
+.co-back:hover{color:#fff}
+.co-hero{padding:84px 0 50px;max-width:760px}
+.co-hero h1{font-size:clamp(38px,6vw,68px);font-weight:900;letter-spacing:-.03em;line-height:1.02}
+.co-hero h1 em{font-style:normal;color:var(--blue)}
+.co-hero p{margin-top:20px;font-size:18px;color:var(--dim);line-height:1.65}
+.co-paths{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:10px}
+@media(max-width:760px){.co-paths{grid-template-columns:1fr}}
+.co-path{background:var(--bg-2);border:1px solid var(--faint);border-radius:18px;padding:30px;display:flex;flex-direction:column}
+.co-path.hot{border-color:rgba(57,146,255,.6)}
+.co-path .pk{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:700}
+.co-path h3{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-top:12px}
+.co-path p{font-size:15px;color:var(--dim);margin-top:10px;flex:1}
+.co-path a{margin-top:20px;align-self:flex-start}
+.co-about{margin-top:60px;padding-top:32px;border-top:1px solid var(--faint)}
+.co-about h2{font-size:24px;font-weight:800;letter-spacing:-.02em}
+.co-about p{margin-top:14px;color:var(--dim);font-size:15.5px;max-width:720px}
+.co-trust{margin-top:36px;display:flex;gap:24px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--dim)}
+.co-trust a{text-decoration:none;border-bottom:1px dotted var(--faint)}
+.co-trust a:hover{color:var(--blue)}
+.co-soon{opacity:.55}
+</style>
+<section id="company" class="coview" hidden aria-label="Company overview">
+  <div class="wrap co-bar">
+    <a class="logo" href="#"><i>S</i>SimpleHire</a>
+    <a class="co-back" href="#">← Back to product</a>
+  </div>
+  <div class="wrap">
+    <div class="co-hero">
+      <h1>Verified hiring for the <em>AI era.</em></h1>
+      <p>SimpleHire is the trust layer between candidates and the companies that hire them. Candidates prove who they are once — identity, work authorization, real skills — and carry a verified profile they own. Hiring teams screen with evidence instead of resumes.</p>
+    </div>
+    <div class="co-paths">
+      <div class="co-path hot">
+        <span class="pk">For hiring teams</span>
+        <h3>Screen before you submit</h3>
+        <p>A $5 verified pre-screen — voice interview, real code execution, identity and work-authorization checks — before any candidate reaches your panel.</p>
+        <a class="btn btn-blue" href="#">Explore the screening product →</a>
+      </div>
+      <div class="co-path">
+        <span class="pk" style="color:var(--green)">For candidates</span>
+        <h3>Get your verified profile</h3>
+        <p>Prove your skills and identity once. Own a portable verified profile that travels with you — so you stand out and skip repeat screenings.</p>
+        <a class="btn btn-dark" href="https://app.simplehire.ai/verify">Get verified →</a>
+      </div>
+    </div>
+    <div class="co-about">
+      <h2>About SimpleHire</h2>
+      <p>SimpleHire Technologies Inc is built in San Francisco by a team with 12+ years in US staffing — the people who watched resume fraud, proxy interviews, and work-authorization surprises burn panel hours from the inside. We're an NVIDIA Inception member. Candidates own their verified results; companies buy evaluation, never the candidate's data.</p>
+      <div class="co-trust">
+        <span class="co-soon">Privacy Policy</span>
+        <span class="co-soon">Terms of Service</span>
+        <span class="co-soon">Security &amp; Data Handling</span>
+        <a href="mailto:hello@simplehire.ai">Contact</a>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  const v=document.getElementById('company');
+  function sync(){const on=location.hash==='#company';v.hidden=!on;document.body.style.overflow=on?'hidden':'';if(on)v.scrollTop=0;}
+  addEventListener('hashchange',sync);sync();
+})();
+</script>
+</body>
+</html>

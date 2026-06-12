@@ -201,6 +201,7 @@ footer{border-top:2px solid var(--ink);padding:36px 0 48px}
   <div class="wrap topbar-in">
     <a class="brand" href="#"><span class="seal">S</span>SimpleHire</a>
     <div class="toplinks">
+      <a href="#company">Company</a>
       <a href="#levels">Interview levels</a>
       <a href="#form">Verification</a>
       <a href="#fees">Fees</a>
@@ -510,6 +511,77 @@ document.querySelectorAll('.redact').forEach(el=>{
 // scroll reveals
 const io = new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.14});
 document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+</script>
+<!-- ============ COMPANY VIEW ============ -->
+<style>
+.coview{position:fixed;inset:0;z-index:200;overflow:auto;background:var(--kraft);padding:0 0 70px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E")}
+.coview[hidden]{display:none}
+.co-bar{display:flex;justify-content:space-between;align-items:center;height:62px;border-bottom:2px solid var(--ink)}
+.co-back{font-family:var(--doc);font-size:12px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--ink-2);font-weight:700}
+.co-back:hover{color:var(--red)}
+.co-hero{padding:76px 0 48px;max-width:760px}
+.co-hero h1{font-family:var(--disp);font-size:clamp(44px,6.4vw,76px);font-weight:900;text-transform:uppercase;line-height:.95}
+.co-hero h1 em{font-style:normal;color:var(--blue)}
+.co-hero p{margin-top:20px;font-size:17px;color:var(--ink-2);line-height:1.6;font-weight:500}
+.co-paths{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:10px}
+@media(max-width:760px){.co-paths{grid-template-columns:1fr}}
+.co-path{background:var(--paper);border:2px solid var(--ink);padding:28px;display:flex;flex-direction:column;box-shadow:6px 6px 0 rgba(28,25,20,.15)}
+.co-path.hot{box-shadow:8px 8px 0 var(--blue)}
+.co-path .pk{font-family:var(--doc);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--red);font-weight:700}
+.co-path h3{font-family:var(--disp);font-size:26px;font-weight:800;text-transform:uppercase;margin-top:10px}
+.co-path p{font-size:14.5px;color:var(--ink-2);margin-top:10px;flex:1}
+.co-path a{margin-top:20px;align-self:flex-start}
+.co-about{margin-top:58px;padding-top:30px;border-top:2px dashed var(--rule)}
+.co-about h2{font-family:var(--disp);font-size:26px;font-weight:800;text-transform:uppercase}
+.co-about p{margin-top:12px;color:var(--ink-2);font-size:15px;max-width:700px}
+.co-trust{margin-top:34px;display:flex;gap:22px;flex-wrap:wrap;font-family:var(--doc);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.co-trust a{text-decoration:none;border-bottom:2px solid var(--rule)}
+.co-trust a:hover{color:var(--red)}
+.co-soon{opacity:.6}
+</style>
+<section id="company" class="coview" hidden aria-label="Company overview">
+  <div class="wrap co-bar">
+    <a class="brand" href="#"><span class="seal">S</span>SimpleHire</a>
+    <a class="co-back" href="#">← Back to product</a>
+  </div>
+  <div class="wrap">
+    <div class="co-hero">
+      <h1>Verified hiring for the <em>AI era.</em></h1>
+      <p>SimpleHire is the trust layer between candidates and the companies that hire them. Candidates prove who they are once — identity, work authorization, real skills — and carry a verified profile they own. Hiring teams screen with evidence instead of resumes.</p>
+    </div>
+    <div class="co-paths">
+      <div class="co-path hot">
+        <span class="pk">For hiring teams</span>
+        <h3>Screen before you submit</h3>
+        <p>A $5 verified pre-screen — voice interview, real code execution, identity and work-authorization checks — before any candidate reaches your panel.</p>
+        <a class="btn" href="#">Explore the product →</a>
+      </div>
+      <div class="co-path">
+        <span class="pk">For candidates</span>
+        <h3>Get your verified profile</h3>
+        <p>Prove your skills and identity once. Own a portable verified profile that travels with you — so you stand out and skip repeat screenings.</p>
+        <a class="btn alt" href="https://app.simplehire.ai/verify">Get verified →</a>
+      </div>
+    </div>
+    <div class="co-about">
+      <h2>About SimpleHire</h2>
+      <p>SimpleHire Technologies Inc is built in San Francisco by a team with 12+ years in US staffing — the people who watched resume fraud, proxy interviews, and work-authorization surprises burn panel hours from the inside. We're an NVIDIA Inception member. Candidates own their verified results; companies buy evaluation, never the candidate's data.</p>
+      <div class="co-trust">
+        <span class="co-soon">Privacy Policy</span>
+        <span class="co-soon">Terms of Service</span>
+        <span class="co-soon">Security &amp; Data</span>
+        <a href="mailto:hello@simplehire.ai">Contact</a>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  const v=document.getElementById('company');
+  function sync(){const on=location.hash==='#company';v.hidden=!on;document.body.style.overflow=on?'hidden':'';if(on)v.scrollTop=0;}
+  addEventListener('hashchange',sync);sync();
+})();
 </script>
 </body>
 </html>
